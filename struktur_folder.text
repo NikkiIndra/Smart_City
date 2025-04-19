@@ -1,0 +1,58 @@
+lib/
+│
+├── main.dart
+├── app.dart                         # Setup router & global themes
+├── core/                            # Konfigurasi inti dan utilitas
+│   ├── constants/                   # Konstanta global (colors, strings, etc)
+│   ├── services/                    # Services seperti API, GPS, Notifikasi
+│   ├── utils/                       # Helper functions
+│   ├── router/                      # Route management
+│   └── widgets/                     # Reusable widgets (buttons, cards, etc)
+│
+├── data/                            # Manajemen data dan model
+│   ├── models/                      # Model data (Laporan, Kontak, etc)
+│   ├── repositories/                # Repository (akses ke API atau local db)
+│   └── dummy/                       # Data dummy/testing (opsional)
+│
+├── features/                        # Semua fitur aplikasi berbasis modular
+│   ├── auth/                        # Login, Register, Splash
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── dashboard/                   # Dashboard utama (navigasi home)
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── kontak_penting/             # Fitur 1: Kontak Penting
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── laporan/                    # Fitur 2: Lapor (form + histori)
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── alarm_maling/              # Fitur 3: Alarm Maling
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── bus_tracking/              # Fitur 4: Tracking dan Jadwal Bus
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   ├── profile/                   # Fitur 5: Profil Pengguna dan Riwayat
+│   │   ├── screens/
+│   │   ├── controllers/
+│   │   └── widgets/
+│
+│   └── settings/                  # Pengaturan Aplikasi
+│       ├── screens/
+│       └── controllers/
+│
+├── l10n/                           # (Opsional) untuk multi bahasa
+└── generated/                      # Generated files seperti json model
