@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
+import '../features/report/controllers/report_controller.dart';
 
-import '../features/laporan/controllers/laporan_controller.dart';
-
-class LaporanBinding extends Bindings {
+class ReportBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<LaporanController>(() => LaporanController());
+    Get.lazyPut<ReportController>(() => ReportController());
   }
 }

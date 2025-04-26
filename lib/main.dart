@@ -3,17 +3,19 @@ import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "SmartCity",
-      initialRoute: AppRoutes.laporan,
+      initialRoute: AppRoutes.welcome,
       getPages: AppPages.pages,
     );
   }
