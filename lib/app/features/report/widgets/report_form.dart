@@ -13,6 +13,8 @@ class ReportForm extends StatelessWidget {
     'Jalan Berlubang',
   ];
 
+  ReportForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Form(

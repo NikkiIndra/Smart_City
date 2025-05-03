@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:iofes_android_apps_smart_city/app/features/auth/controllers/auth_controller.dart';
 import '../widgets/login_page.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
+  LoginScreen({super.key});
+  final controller = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: LoginPage(),
-    );
+    return Scaffold(body: LoginPage());
   }
 }

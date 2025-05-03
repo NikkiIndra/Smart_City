@@ -7,15 +7,8 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Center(child: WelcomePage()),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: const WelcomePage(), // Tidak perlu Center jika WelcomePage sudah diatur dengan benar
     );
   }
 }

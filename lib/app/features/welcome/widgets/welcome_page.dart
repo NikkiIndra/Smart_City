@@ -1,35 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iofes_android_apps_smart_city/app/features/auth/login/screens/login_screen.dart';
+import 'package:iofes_android_apps_smart_city/app/widgets/text_widget.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              children: [
-                Image.asset("img/logo.jpeg", width: 50, height: 50),
-                Text(
-                  "Selamat datang di aplikasi kami!",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
+    final heigh = MediaQuery.of(context).size.height;
+    return Scaffold(
+      body: ListView(
+        // Menggunakan ListView untuk optimasi
+        padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 24.0),
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/img/logo.jpeg",
+                fit: BoxFit.cover,
+                width: 200,
+                height: 200,
+              ),
+              SizedBox(height: heigh * 0.02),
+              const TemplateText(
+                label: "Smart City",
+                fontSize: 28.0,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(height: heigh * 0.01),
+              const TemplateText(
+                label:
+                    "Akses cepat informasi darurat, berita, dan layanan publik",
+                fontSize: 16.0,
+                fontWeight: FontWeight.w200,
+              ),
+            ],
+          ),
+          SizedBox(height: heigh * 0.4),
+          ElevatedButton(
+            onPressed: () {
+              Get.to(() => LoginScreen());
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+                horizontal: 32.0,
+              ),
+              fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Get.to(() => LoginScreen());
-              },
-              child: Text("Get Started"),
+            child: const TemplateText(
+              label: "Jelajahi Sekarang",
+              color: Colors.black,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w200,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

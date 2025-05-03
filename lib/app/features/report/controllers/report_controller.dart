@@ -86,7 +86,7 @@ class ReportController extends GetxController {
 
   // Ganti method _getLocation jadi public agar bisa diakses
 Future<void> getLocation() async {
-  String _location = 'Menunggu lokasi...';
+  String location = 'Menunggu lokasi...';
   bool enabledService;
   LocationPermission permission;
 
@@ -140,9 +140,9 @@ Future<void> getLocation() async {
       position.latitude,
       position.longitude,
     );
-    _location =
+    location =
         "${placemark[0].name}, ${placemark[0].subLocality}, ${placemark[0].locality}, ${placemark[0].administrativeArea}, ${placemark[0].country}";
-    lokasiController.text = _location;
+    lokasiController.text = location;
   }
 }
 

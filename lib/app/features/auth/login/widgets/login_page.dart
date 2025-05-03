@@ -1,71 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/features/auth/register/screens/register_screen.dart';
-import 'package:iofes_android_apps_smart_city/app/features/main/screens/main_screen.dart';
+import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
+import '../../../../widgets/loading_widget.dart';
+import '../../controllers/auth_controller.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    int height = MediaQuery.of(context).size.height.toInt();
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: [
-          Positioned(
-            top: 25,
-            left: 0,
-            child: Text(
-              "Let's Goooo",
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-            ),
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    var controller = Get.find<AuthController>();
+
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          // Gunakan SingleChildScrollView untuk layout yang fleksibel
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.08, // 8% dari lebar layar
+            vertical: screenHeight * 0.05, // 5% dari tinggi layar
           ),
-          Text("Lihat berita terbaru dan terupdate"),
-          SizedBox(height: 20),
-          Center(child: Image.asset("img/logo.jpeg", width: 100, height: 100)),
-          SizedBox(height: 20),
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Email",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 10),
-          TextField(
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: "Password",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Get.to(()=> MainScreen());
-            },
-            child: Text("Login"),
-          ),
-          SizedBox(height: height * 0.1,),
-          Row(
-            children: [
-              Text(
-                "Belum punya akun?",
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(width: 10),  
-              TextButton(
-                onPressed: () {
-                  Get.to(() => RegisterScreen());
-                },
-                child: Text(
-                  "Daftar",
-                  style: TextStyle(fontSize: 16, color: Colors.blue),
+          child: Form(
+            key: controller.formKeyLogin,
+            onChanged: controller.validateForm,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: screenHeight * 0.02),
+                const Text(
+                  "Let's Goooo",
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+                const Text("Lihat berita terbaru dan terupdate"),
+                SizedBox(height: screenHeight * 0.03),
+                Center(
+                  child: Image.asset(
+                    "assets/img/logo.jpeg",
+                    width: screenWidth * 0.4,
+                    height: screenWidth * 0.4,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                TextFormField(
+                  controller: emailController,
+                  onChanged: (_) => controller.validateForm(),
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email harus diisi';
+                    }
+                    if (!value.contains('@') || !value.contains('.')) {
+                      return 'Format email tidak valid';
+                    }
+                    if (!controller.isEmailRegistered(value)) {
+                      return 'Email tidak terdaftar';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.015),
+                TextFormField(
+                  controller: passwordController,
+                  onChanged: (_) => controller.validateForm(),
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password harus diisi';
+                    }
+                    if (!controller.isUserValid(emailController.text, value)) {
+                      return 'Password tidak valid';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (controller.formKeyLogin.currentState!.validate()) {
+                        LoadingWidget.showLoading(
+                          context,
+                          message: "Memverifikasi...",
+                        );
+                        Future.delayed(const Duration(seconds: 2), () {
+                          LoadingWidget.hideLoading(context);
+                          Get.offAllNamed(AppRoutes.navbar);
+                        });
+                      }
+                    },
+                    child: const Text("Login"),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Belum punya akun?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.register);
+                      },
+                      child: const Text(
+                        "Daftar",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF06D6A0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          
-        ],
+        ),
       ),
     );
   }
