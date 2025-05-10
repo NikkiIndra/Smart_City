@@ -41,20 +41,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iofes_android_apps_smart_city/app/Theme/controller/theme_controller.dart';
 import 'package:iofes_android_apps_smart_city/my_app.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final prefs = await SharedPreferences.getInstance();
-  final isFirstTime = prefs.getBool('isfirsttime') ?? true;
+  // Inisialisasi GetStorage
+  await GetStorage.init();
 
-  // Inisialisasi dan load preferensi tema
+  final box = GetStorage();
+  final isFirstTime = box.read('isfirsttime') ?? true;
+  final isLoggedIn = box.read('is_logged_in') ?? false;
+
   final themeController = Get.put(ThemeController());
-  await themeController.loadTheme(); // Tunggu selesai
+  await themeController.loadTheme(); // tidak perlu ubah jika dalam controller pakai GetStorage
 
-  runApp(MyApp(isFirstTime: isFirstTime));
+  runApp(MyApp(isFirstTime: isFirstTime, isLoggedIn: isLoggedIn));
 }
-

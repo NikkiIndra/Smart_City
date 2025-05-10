@@ -18,14 +18,12 @@ class LoginPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          // Gunakan SingleChildScrollView untuk layout yang fleksibel
           padding: EdgeInsets.symmetric(
             horizontal: screenWidth * 0.08, // 8% dari lebar layar
             vertical: screenHeight * 0.05, // 5% dari tinggi layar
           ),
           child: Form(
             key: controller.formKeyLogin,
-            onChanged: controller.validateForm,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -48,7 +46,6 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.03),
                 TextFormField(
                   controller: emailController,
-                  onChanged: (_) => controller.validateForm(),
                   decoration: const InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
@@ -69,7 +66,6 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.015),
                 TextFormField(
                   controller: passwordController,
-                  onChanged: (_) => controller.validateForm(),
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -95,15 +91,30 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    onFocusChange: (_) => controller.validateForm(),
                     onPressed: () {
                       if (controller.formKeyLogin.currentState!.validate()) {
+                        print("berhasil login");
                         LoadingWidget.showLoading(
                           context,
                           message: "Memverifikasi...",
                         );
                         Future.delayed(const Duration(seconds: 2), () {
+                          // Simulasikan proses login
                           LoadingWidget.hideLoading(context);
+
+                          // Menyimpan status login ke GetStorage
+                          controller.box.write('isloggedin', true);
+                          controller.isLoggedIn.value = true;
+
+                          // Arahkan ke halaman navbar setelah login berhasil
                           Get.offAllNamed(AppRoutes.navbar);
+
+                          // Cek kredensial login
+                          controller.login(
+                            emailController.text,
+                            passwordController.text,
+                          );
                         });
                       }
                     },

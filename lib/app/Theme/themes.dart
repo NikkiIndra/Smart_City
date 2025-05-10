@@ -3,27 +3,39 @@ import 'package:flutter/material.dart';
 class AppThemes {
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFF50C9CE),
-    primaryColor: const Color(0xFF50C9CE),
+    scaffoldBackgroundColor:
+        Colors.white, // Mengubah warna latar belakang menjadi putih
+    primaryColor: Colors.white, // Mengubah warna primary menjadi putih
     inputDecorationTheme: InputDecorationTheme(
-      fillColor: const Color(0xFF50C9CE),
+      fillColor:
+          Colors.white, // Mengubah warna latar belakang input menjadi putih
       filled: true,
-      labelStyle: const TextStyle(color: Color(0xFF2E382E)),
+      labelStyle: const TextStyle(
+        color: Color(0xFF2E382E),
+      ), // Warna label tetap
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFF2E382E)),
+        borderSide: const BorderSide(
+          color: Color(0xFF2E382E),
+        ), // Warna border tetap
         borderRadius: BorderRadius.circular(8),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFF2E382E), width: 2),
+        borderSide: const BorderSide(
+          color: Color(0xFF2E382E),
+          width: 2,
+        ), // Warna border tetap
         borderRadius: BorderRadius.circular(8),
       ),
     ),
-    textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xFF2E382E))),
+    textTheme: const TextTheme(
+      bodyMedium: TextStyle(color: Color(0xFF2E382E)),
+    ), // Warna teks tetap
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF50C9CE),
-        foregroundColor: const Color(0xFF2E382E),
-        side: const BorderSide(color: Color(0xFF2E382E)),
+        backgroundColor:
+            Colors.white, // Mengubah warna background button menjadi putih
+        foregroundColor: const Color(0xFF2E382E), // Warna teks tetap
+        side: const BorderSide(color: Color(0xFF2E382E)), // Warna border tetap
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),

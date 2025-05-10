@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../../../routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
 
@@ -30,6 +31,7 @@ class _RegisterKeyState extends State<RegisterKey> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   hintText: "E-Mail",
+                  
                   prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -37,13 +39,28 @@ class _RegisterKeyState extends State<RegisterKey> {
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Email wajib diisi';
+                  if (value == null || value.isEmpty)
+                    return 'Email wajib diisi';
                   if (!value.contains('@') || !value.contains('.')) {
                     return 'Format email tidak valid';
+                  }
+                  if (controller.checkEmailExist(value)) {
+                    return 'Email sudah terdaftar';
                   }
                   return null;
                 },
               ),
+              SizedBox(height: 12),
+              // Pesan error jika email sudah terdaftar
+              // Obx(() {
+              //   if (controller.isEmailExist.value) {
+              //     return Text(
+              //       'Email sudah terdaftar',
+              //       style: TextStyle(color: Colors.red, fontSize: 12),
+              //     );
+              //   }
+              //   return SizedBox.shrink(); // Tidak menampilkan pesan jika email tidak ada
+              // }),
               SizedBox(height: 12),
               TextFormField(
                 controller: _passwordController,
@@ -87,10 +104,37 @@ class _RegisterKeyState extends State<RegisterKey> {
               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
-                  controller.isFormValid.value
-                      ? controller.submitForm(context, AppRoutes.navbar)
-                      : null;
+                  if (controller.formKeyRegisterKey.currentState!.validate()) {
+                    final box = GetStorage();
+                    final rawEmails = box.read('registeredEmails') ?? [];
+                    final List<String> emails = List<String>.from(
+                      rawEmails.whereType<String>(),
+                    );
+
+                    final List<dynamic> rawUsers = box.read('users') ?? [];
+                    final List<Map<String, String>> users =
+                        rawUsers
+                            .map((e) => Map<String, String>.from(e as Map))
+                            .toList();
+
+                    // TRIM email sebelum disimpan
+                    final email = _emailController.text.trim().toLowerCase();
+                    final password = _confirmController.text;
+
+                    emails.add(email.toLowerCase());
+                    users.add({'email': email, 'password': password});
+
+                    box.write('registeredEmails', emails);
+                    box.write('users', users);
+
+                    print(
+                      box.read('registeredEmails'),
+                    ); // Debug: tampilkan semua email tersimpan
+
+                    controller.submitForm(context, AppRoutes.navbar);
+                  }
                 },
+
                 child: Text("Daftar"),
               ),
             ],

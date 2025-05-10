@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 
 import 'app/Theme/controller/theme_controller.dart';
 import 'app/Theme/themes.dart';
 import 'app/bindings/global_binding.dart';
 import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
   final bool isFirstTime;
-  const MyApp({super.key, required this.isFirstTime});
+  final bool isLoggedIn;
+  const MyApp({
+    super.key,
+    required this.isFirstTime,
+    required this.isLoggedIn,
+  });
 
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+
+    String initialRoute;
+    if (isFirstTime) {
+      initialRoute = AppRoutes.welcome;
+    } else if (isLoggedIn) {
+      initialRoute = AppRoutes.navbar; // atau dashboard page Anda
+    } else {
+      initialRoute = AppRoutes.login;
+    }
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -22,9 +36,8 @@ class MyApp extends StatelessWidget {
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
       themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
-      initialRoute: isFirstTime ? AppRoutes.welcome : AppRoutes.login,
+      initialRoute: initialRoute,
       getPages: AppPages.pages,
     );
   }
 }
-

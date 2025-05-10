@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import '../../../widgets/loading_widget.dart';
-import '../login/models/dataDummy.dart';
 
 class AuthController extends GetxController {
   final GlobalKey<FormState> formKeyRegisterPage = GlobalKey<FormState>();
@@ -9,6 +10,45 @@ class AuthController extends GetxController {
   final GlobalKey<FormState> formKeyLogin = GlobalKey<FormState>();
 
   var isFormValid = false.obs;
+  var isLoggedIn = false.obs; // Status login menggunakan GetStorage
+  final box = GetStorage(); // GetStorage untuk menyimpan status
+  // Menyimpan status apakah email sudah terdaftar atau belum
+  var isEmailExist = false.obs;
+
+  // Properti untuk menampung data pengguna
+  String namaKtp = '';
+  String noTelepon = '';
+  String rt = '';
+  String rw = '';
+  String namaDesa = '';
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Cek status login dari GetStorage
+    isLoggedIn.value = box.read('isloggedin') ?? false;
+  }
+
+  void saveUser(String email, String password) {
+    List<Map<String, dynamic>> users = box.read('users') ?? [];
+    users.add({'email': email, 'password': password});
+    box.write('users', users);
+
+    // Simpan juga daftar email yang sudah terdaftar
+    List<String> emails = box.read('registeredEmails') ?? [];
+    emails.add(email);
+    box.write('registeredEmails', emails);
+  }
+
+  // Fungsi untuk mengecek email dari GetStorage
+  bool checkEmailExist(String email) {
+    final box = GetStorage();
+    final rawEmails = box.read('registeredEmails') ?? [];
+    final List<String> emails = List<String>.from(
+      rawEmails.whereType<String>(),
+    );
+    return emails.contains(email.trim());
+  }
 
   bool isPasswordComplex(String password) {
     final regex = RegExp(
@@ -17,22 +57,58 @@ class AuthController extends GetxController {
     return regex.hasMatch(password);
   }
 
-  bool isUserValid(String email, String password) {
-    return DataDummy.users.any(
-      (user) => user.email == email && user.password == password,
-    );
-  }
   bool isEmailRegistered(String email) {
-    return DataDummy.users.any((user) => user.email == email);
+    final rawEmails = box.read('registeredEmails') ?? [];
+    // Memastikan data yang dibaca adalah List<String>
+    List<String> emails = List<String>.from(rawEmails.whereType<String>());
+    return emails.contains(email);
   }
-  //  void printAllEmails() {
-  //   for (var user in DataDummy.users && DataDummy.email) {
-  //     print(user.email);
-  //   }
-  //   bool login(String email, String password) {
-  //   return DataDummy.users.any((user) =>
-  //     user.email == email && user.password == password);
-  // }
+
+  bool isUserValid(String email, String password) {
+    List<Map<String, dynamic>> users =
+        box.read('users') ??
+        []; // Tidak perlu cast langsung ke Map<String, String>
+
+    for (var user in users) {
+      if (user['email'] == email && user['password'] == password) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void login(String emailInput, String passwordInput) {
+    List<Map<String, dynamic>> users = box.read('users') ?? [];
+
+    bool found = false;
+    for (var user in users) {
+      if (user['email'] == emailInput && user['password'] == passwordInput) {
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      Get.snackbar(
+        "Login Berhasil",
+        "Selamat datang!",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      box.write('isloggedin', true);
+      isLoggedIn.value = true;
+
+      Get.offAllNamed(AppRoutes.navbar);
+    } else {
+      Get.snackbar(
+        "Login Gagal",
+        "Email atau password salah",
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
+  }
 
   void validateForm() {
     final isValid1 = formKeyRegisterKey.currentState?.validate() ?? false;
@@ -64,8 +140,27 @@ class AuthController extends GetxController {
 
       Future.delayed(const Duration(seconds: 3), () {
         LoadingWidget.hideLoading(context);
+
+        // Simulasi login/daftar dan update status di GetStorage
+        if (isValid3) {
+          box.write('isloggedin', true);
+          isLoggedIn.value = true;
+        } else {
+          // Simulasi registrasi dan pindah ke halaman login
+          box.write('isloggedin', false);
+          isLoggedIn.value = false;
+        }
+
+        // Navigasi ke halaman sesuai status
         Get.offAllNamed(route);
       });
     }
+  }
+
+  void logout() {
+    // Logout dengan menghapus status login dari GetStorage
+    box.remove('isloggedin');
+    isLoggedIn.value = false;
+    Get.offAllNamed('/welcome'); // Kembali ke halaman welcome setelah logout
   }
 }

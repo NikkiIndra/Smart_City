@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import '../../../../widgets/text_widget.dart';
 import '../../controllers/auth_controller.dart';
@@ -7,6 +8,8 @@ import '../../controllers/auth_controller.dart';
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
   final AuthController controller = Get.find<AuthController>();
+  final GetStorage storage =
+      GetStorage(); // Menggunakan GetStorage untuk menyimpan data
 
   @override
   Widget build(BuildContext context) {
@@ -47,34 +50,62 @@ class RegisterPage extends StatelessWidget {
                   Icons.badge,
                   "Nama Sesuai KTP",
                   keyboardType: TextInputType.name,
+                  onChanged: (value) {
+                    controller.namaKtp =
+                        value; // Menyimpan nama KTP di controller
+                  },
                 ),
-            
                 _buildInputField(
                   Icons.phone,
                   "No. Telepon",
                   keyboardType: TextInputType.phone,
+                  onChanged: (value) {
+                    controller.noTelepon =
+                        value; // Menyimpan no telepon di controller
+                  },
                 ),
                 _buildInputField(
                   Icons.home,
                   "Rukun Tetangga (RT)",
                   keyboardType: TextInputType.streetAddress,
+                  onChanged: (value) {
+                    controller.rt = value; // Menyimpan RT di controller
+                  },
                 ),
                 _buildInputField(
                   Icons.home,
                   "Rukun Warga (RW)",
                   keyboardType: TextInputType.streetAddress,
+                  onChanged: (value) {
+                    controller.rw = value; // Menyimpan RW di controller
+                  },
                 ),
                 _buildInputField(
                   Icons.location_city,
                   "Nama Desa",
                   keyboardType: TextInputType.streetAddress,
+                  onChanged: (value) {
+                    controller.namaDesa =
+                        value; // Menyimpan nama desa di controller
+                  },
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      controller.submitForm(context, AppRoutes.register_key);
+                      if (controller.formKeyRegisterPage.currentState!
+                          .validate()) {
+                        // Menyimpan data di GetStorage sebelum lanjut
+                        storage.write('namaKtp', controller.namaKtp);
+                        storage.write('noTelepon', controller.noTelepon);
+                        storage.write('rt', controller.rt);
+                        storage.write('rw', controller.rw);
+                        storage.write('namaDesa', controller.namaDesa);
+
+                        // Mengirim data ke server IoT atau langkah selanjutnya
+                        controller.submitForm(context, AppRoutes.register_key);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -105,6 +136,7 @@ class RegisterPage extends StatelessWidget {
     String hint, {
     bool obscure = false,
     TextInputType? keyboardType,
+    required Function(String) onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -113,21 +145,13 @@ class RegisterPage extends StatelessWidget {
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.greenAccent),
           hintText: hint,
-          filled: true,
-          fillColor: Colors.grey[200],
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
-          ),
         ),
         keyboardType: keyboardType ?? TextInputType.text,
         textInputAction: TextInputAction.next,
-        style: const TextStyle(fontSize: 16, color: Colors.black),
+
         cursorColor: Colors.greenAccent,
-        onChanged: (value) {
-          // Handle input changes if needed
-        },
+        onChanged: onChanged, // Menangani perubahan input
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Field ini tidak boleh kosong';

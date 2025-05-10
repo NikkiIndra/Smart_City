@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart'; // Tambahkan ini
 import 'package:iofes_android_apps_smart_city/app/features/auth/login/screens/login_screen.dart';
 import 'package:iofes_android_apps_smart_city/app/widgets/text_widget.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
+    // Inisialisasi GetStorage
+    final box = GetStorage();
     final heigh = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: ListView(
-        // Menggunakan ListView untuk optimasi
         padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 24.0),
         children: [
           Column(
@@ -40,6 +44,10 @@ class WelcomePage extends StatelessWidget {
           SizedBox(height: heigh * 0.4),
           ElevatedButton(
             onPressed: () {
+              // Simpan status agar WelcomePage tidak ditampilkan lagi
+              box.write('isfirsttime', false);
+
+              // Arahkan ke halaman login
               Get.to(() => LoginScreen());
             },
             style: ElevatedButton.styleFrom(
