@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import '../../../../widgets/loading_widget.dart';
-import '../../controllers/auth_controller.dart';
+import '../models/dataDummy.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
+  bool isEmailRegistered(String email) {
+    return DataDummy.users.any((user) => user.email == email);
+  }
+
+  bool isUserValid(String email, String password) {
+    return DataDummy.users.any((user) =>
+        user.email == email.trim() && user.password == password.trim());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +22,17 @@ class LoginPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    var controller = Get.find<AuthController>();
+    final GlobalKey<FormState> formKeyLogin = GlobalKey<FormState>();
 
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.08, // 8% dari lebar layar
-            vertical: screenHeight * 0.05, // 5% dari tinggi layar
+            horizontal: screenWidth * 0.08,
+            vertical: screenHeight * 0.05,
           ),
           child: Form(
-            key: controller.formKeyLogin,
+            key: formKeyLogin,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -57,7 +66,7 @@ class LoginPage extends StatelessWidget {
                     if (!value.contains('@') || !value.contains('.')) {
                       return 'Format email tidak valid';
                     }
-                    if (!controller.isEmailRegistered(value)) {
+                    if (!isEmailRegistered(value)) {
                       return 'Email tidak terdaftar';
                     }
                     return null;
@@ -67,7 +76,7 @@ class LoginPage extends StatelessWidget {
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Password",
                     border: OutlineInputBorder(),
                   ),
@@ -75,7 +84,7 @@ class LoginPage extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Password harus diisi';
                     }
-                    if (!controller.isUserValid(emailController.text, value)) {
+                    if (!isUserValid(emailController.text, value)) {
                       return 'Password tidak valid';
                     }
                     return null;
@@ -91,30 +100,16 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onFocusChange: (_) => controller.validateForm(),
                     onPressed: () {
-                      if (controller.formKeyLogin.currentState!.validate()) {
+                      if (formKeyLogin.currentState!.validate()) {
                         print("berhasil login");
                         LoadingWidget.showLoading(
                           context,
                           message: "Memverifikasi...",
                         );
                         Future.delayed(const Duration(seconds: 2), () {
-                          // Simulasikan proses login
                           LoadingWidget.hideLoading(context);
-
-                          // Menyimpan status login ke GetStorage
-                          controller.box.write('isloggedin', true);
-                          controller.isLoggedIn.value = true;
-
-                          // Arahkan ke halaman navbar setelah login berhasil
                           Get.offAllNamed(AppRoutes.navbar);
-
-                          // Cek kredensial login
-                          controller.login(
-                            emailController.text,
-                            passwordController.text,
-                          );
                         });
                       }
                     },

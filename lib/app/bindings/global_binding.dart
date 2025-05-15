@@ -12,7 +12,6 @@ class GlobalBindings extends Bindings {
     // Semua controller yang akan digunakan di seluruh app
     Get.lazyPut<NavBarController>(() => NavBarController());
     Get.lazyPut<HomeController>(() => HomeController());
-    Get.lazyPut<ReportController>(() => ReportController());
     // Tambahkan semua controller lainnya di sini
   }
 }

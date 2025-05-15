@@ -2,124 +2,98 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
-import '../../../../widgets/text_widget.dart';
 import '../../controllers/auth_controller.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
   final AuthController controller = Get.find<AuthController>();
-  final GetStorage storage =
-      GetStorage(); // Menggunakan GetStorage untuk menyimpan data
+  final GetStorage storage = GetStorage();
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.08,
+            vertical: screenHeight * 0.05,
+          ),
           child: Form(
             key: controller.formKeyRegisterPage,
             onChanged: controller.validateForm,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TemplateText(
-                  label: "Buat Akun",
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                const Text(
+                  "Buat Akun",
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 20),
-                TemplateText(
-                  label: "Silahkan isi data di bawah ini",
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
+                const Text("Silahkan isi data di bawah ini"),
+                SizedBox(height: screenHeight * 0.03),
                 Center(
                   child: Image.asset(
                     "assets/img/logo.jpeg",
-                    width: 100,
-                    height: 100,
+                    width: screenWidth * 0.4,
+                    height: screenWidth * 0.4,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.03),
                 _buildInputField(
-                  Icons.badge,
-                  "Nama Sesuai KTP",
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    controller.namaKtp =
-                        value; // Menyimpan nama KTP di controller
-                  },
+                  icon: Icons.badge,
+                  labelText: "Nama Sesuai KTP",
+                  onChanged: (value) => controller.namaKtp = value,
                 ),
                 _buildInputField(
-                  Icons.phone,
-                  "No. Telepon",
+                  icon: Icons.phone,
+                  labelText: "No. Telepon",
                   keyboardType: TextInputType.phone,
-                  onChanged: (value) {
-                    controller.noTelepon =
-                        value; // Menyimpan no telepon di controller
-                  },
+                  onChanged: (value) => controller.noTelepon = value,
                 ),
                 _buildInputField(
-                  Icons.home,
-                  "Rukun Tetangga (RT)",
-                  keyboardType: TextInputType.streetAddress,
-                  onChanged: (value) {
-                    controller.rt = value; // Menyimpan RT di controller
-                  },
+                  icon: Icons.home,
+                  labelText: "Rukun Tetangga (RT)",
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) => controller.rt = value,
                 ),
                 _buildInputField(
-                  Icons.home,
-                  "Rukun Warga (RW)",
-                  keyboardType: TextInputType.streetAddress,
-                  onChanged: (value) {
-                    controller.rw = value; // Menyimpan RW di controller
-                  },
+                  icon: Icons.home,
+                  labelText: "Rukun Warga (RW)",
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) => controller.rw = value,
                 ),
                 _buildInputField(
-                  Icons.location_city,
-                  "Nama Desa",
-                  keyboardType: TextInputType.streetAddress,
-                  onChanged: (value) {
-                    controller.namaDesa =
-                        value; // Menyimpan nama desa di controller
-                  },
+                  icon: Icons.location_city,
+                  labelText: "Nama Desa",
+                  onChanged: (value) => controller.namaDesa = value,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.05),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () {
                       if (controller.formKeyRegisterPage.currentState!
                           .validate()) {
-                        // Menyimpan data di GetStorage sebelum lanjut
                         storage.write('namaKtp', controller.namaKtp);
                         storage.write('noTelepon', controller.noTelepon);
                         storage.write('rt', controller.rt);
                         storage.write('rw', controller.rw);
                         storage.write('namaDesa', controller.namaDesa);
 
-                        // Mengirim data ke server IoT atau langkah selanjutnya
                         controller.submitForm(context, AppRoutes.register_key);
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 5,
-                    ),
-                    child: TemplateText(
-                      label: "Daftar",
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    child: const Text("Daftar"),
                   ),
                 ),
               ],
@@ -130,10 +104,9 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk membuat input field dengan ikon
-  Widget _buildInputField(
-    IconData icon,
-    String hint, {
+  Widget _buildInputField({
+    required IconData icon,
+    required String labelText,
     bool obscure = false,
     TextInputType? keyboardType,
     required Function(String) onChanged,
@@ -143,15 +116,14 @@ class RegisterPage extends StatelessWidget {
       child: TextFormField(
         obscureText: obscure,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.greenAccent),
-          hintText: hint,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          labelText: labelText,
+          border: const OutlineInputBorder(),
+          prefixIcon: Icon(icon, color: Colors.green),
         ),
-        keyboardType: keyboardType ?? TextInputType.text,
+        keyboardType: keyboardType,
+        cursorColor: Colors.green,
         textInputAction: TextInputAction.next,
-
-        cursorColor: Colors.greenAccent,
-        onChanged: onChanged, // Menangani perubahan input
+        onChanged: onChanged,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Field ini tidak boleh kosong';

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iofes_android_apps_smart_city/app/features/Home/controllers/home_controller.dart';
+import 'package:iofes_android_apps_smart_city/app/features/report/view/report_view.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import 'package:iofes_android_apps_smart_city/app/widgets/text_widget.dart';
+
+import '../../bus_traking/view/map_screen.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -23,6 +26,13 @@ class HomePage extends StatelessWidget {
     "Lapor Insiden",
     "peringatan Bahaya",
     "Traking Bus",
+  ];
+
+  final feature = [
+    MapScreen(),
+    ReportScreen(),
+    MapScreen(),
+    MapScreen(),
   ];
 
   void handleFeatureTap(int index) {

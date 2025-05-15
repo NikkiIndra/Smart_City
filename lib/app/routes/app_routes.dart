@@ -8,5 +8,6 @@ abstract class AppRoutes {
   static const register_key = '/register_key';
   static const navbar = '/navbar';
   static const alarm = '/alarm';
+  static const bus_traking = '/bus-traking';
   // ...hapus home kalau tidak dipakai lagi
 }

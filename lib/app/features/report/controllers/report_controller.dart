@@ -1,149 +1,61 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../service/location_service.dart';
 
 class ReportController extends GetxController {
   final formKey = GlobalKey<FormState>();
-
-  // Controller inputan
+  final addressController = TextEditingController();
+  final nameController = TextEditingController();
   final dateController = TextEditingController();
-  final judulController = TextEditingController();
-  final deskripsiController = TextEditingController();
-  final lokasiController = TextEditingController();
 
-  // Data yang akan dikirim ke server
-  var selectedKategori = ''.obs;
-  var tanggalKejadian = ''.obs;
+  var gpsSelected = false.obs;
+  var isLoadingLocation = false.obs;
+  var address = ''.obs;
+  var image = Rxn<File>();
 
-  void isiTanggalHariIni() {
-    final now = DateTime.now();
-    final tanggal = "${now.day} ${_namaBulan(now.month)} ${now.year}";
-    dateController.text = tanggal;
-    tanggalKejadian.value = tanggal;
+  final _namaBulan = [
+    '',
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+  ];
+
+  String namaBulan(int bulan) => _namaBulan[bulan];
+
+  Future<void> getLocation() async {
+    isLoadingLocation.value = true;
+    final result = await LocationService.getAddressFromGPS();
+    address.value = result;
+    addressController.text = result;
+    gpsSelected.value = result.isNotEmpty;
+    isLoadingLocation.value = false;
   }
 
-  void pilihTanggal(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) {
-      final tanggal =
-          "${picked.day} ${_namaBulan(picked.month)} ${picked.year}";
-      dateController.text = tanggal;
-      tanggalKejadian.value = tanggal;
+  void showMsg(String msg) {
+    Get.snackbar('Pesan', msg);
+  }
+
+  Future<void> pickImageFromCamera() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      image.value = File(pickedFile.path);
     }
   }
 
-  String _namaBulan(int bulan) {
-    const namaBulan = [
-      '',
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-    return namaBulan[bulan];
-  }
-
-  Map<String, dynamic> getDataLaporan() {
-    return {
-      'kategori': selectedKategori.value,
-      'judul': judulController.text,
-      'deskripsi': deskripsiController.text,
-      'lokasi': lokasiController.text,
-      'tanggal': tanggalKejadian.value,
-    };
+  void submitForm() {
+    if (formKey.currentState!.validate() && gpsSelected.value) {
+      showMsg('Form berhasil dikirim');
+    } else {
+      showMsg('Pastikan semua field sudah diisi dan GPS dipilih');
+    }
   }
 
   @override
   void onClose() {
+    addressController.dispose();
+    nameController.dispose();
     dateController.dispose();
-    judulController.dispose();
-    deskripsiController.dispose();
-    lokasiController.dispose();
     super.onClose();
   }
-
-  @override
-  void onInit() {
-    super.onInit();
-    isiTanggalHariIni();
-    getLocation();
-  }
-
-  // Ganti method _getLocation jadi public agar bisa diakses
-Future<void> getLocation() async {
-  String location = 'Menunggu lokasi...';
-  bool enabledService;
-  LocationPermission permission;
-
-  enabledService = await Geolocator.isLocationServiceEnabled();
-  if (!enabledService) {
-    Fluttertoast.showToast(
-      msg: "Aktifkan GPS",
-      gravity: ToastGravity.CENTER,
-      toastLength: Toast.LENGTH_SHORT,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      timeInSecForIosWeb: 2,
-    );
-    return;
-  }
-
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      Fluttertoast.showToast(
-        msg: ("Izinkan akses lokasi"),
-        gravity: ToastGravity.CENTER,
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        timeInSecForIosWeb: 2,
-      );
-      return;
-    }
-  }
-
-  if (permission == LocationPermission.deniedForever) {
-    Fluttertoast.showToast(
-      msg: "Izinkan akses lokasi dari pengaturan",
-      gravity: ToastGravity.CENTER,
-      toastLength: Toast.LENGTH_SHORT,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      timeInSecForIosWeb: 2,
-    );
-    return;
-  }
-
-  if (permission == LocationPermission.always ||
-      permission == LocationPermission.whileInUse) {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    List<Placemark> placemark = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-    location =
-        "${placemark[0].name}, ${placemark[0].subLocality}, ${placemark[0].locality}, ${placemark[0].administrativeArea}, ${placemark[0].country}";
-    lokasiController.text = location;
-  }
-}
-
 }
