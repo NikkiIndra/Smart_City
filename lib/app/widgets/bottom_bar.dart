@@ -41,7 +41,7 @@ class NavBar extends StatelessWidget {
             duration: const Duration(milliseconds: 500),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             tabBackgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).iconTheme.color,
             activeColor: Colors.teal,
             tabs: const [
               GButton(icon: Icons.settings, text: 'Pengaturan'),

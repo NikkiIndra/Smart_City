@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 
     String initialRoute;
     if (isFirstTime) {
-      initialRoute = AppRoutes.welcome;
+      initialRoute = AppRoutes.onboarding;
     } else if (isLoggedIn) {
       initialRoute = AppRoutes.navbar; // atau dashboard page Anda
     } else {

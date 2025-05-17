@@ -6,6 +6,8 @@ class ThemeController extends GetxController {
   final isDarkMode = false.obs;
   final box = GetStorage();
 
+  bool  get isDark => isDarkMode.value;
+
   Future<void> loadTheme() async {
     isDarkMode.value = box.read('isDarkMode') ?? false;
   }

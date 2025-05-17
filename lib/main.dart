@@ -54,7 +54,6 @@ void main() async {
   final box = GetStorage();
   final isFirstTime = box.read('isfirsttime') ?? true;
   final isLoggedIn = box.read('is_logged_in') ?? false;
-
   final themeController = Get.put(ThemeController());
   await themeController.loadTheme(); // tidak perlu ubah jika dalam controller pakai GetStorage
 

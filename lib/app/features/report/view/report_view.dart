@@ -6,6 +6,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class ReportScreen extends StatelessWidget {
   final ReportController controller = Get.find();
 
+  ReportScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,13 +148,13 @@ class ReportScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: controller.submitForm,
-                  child: Text('Kirim'),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 14),
                   ),
+                  child: Text('Kirim'),
                 ),
               ],
             ),

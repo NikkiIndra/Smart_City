@@ -41,7 +41,7 @@ class RegisterController extends GetxController {
       );
 
       final rawUsers = box.read('users') ?? [];
-      final List<Map<String, String>> users =
+      final List<Map<dynamic, dynamic>> users =
           rawUsers.map((e) => Map<String, String>.from(e)).toList();
 
       emails.add(email);

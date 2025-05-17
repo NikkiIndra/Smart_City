@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/features/Home/widgets/home_page.dart';
-import 'package:iofes_android_apps_smart_city/app/features/profile/widgets/profile_page.dart';
-import 'package:iofes_android_apps_smart_city/app/features/settings/widgets/setting_page.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/Home/widgets/home_page.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/profile/widgets/profile_page.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/settings/widgets/setting_page.dart';
 
 class NavBarController extends GetxController {
   // Controller untuk mengelola state dan logika aplikasi

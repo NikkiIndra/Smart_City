@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
     await Future.delayed(const Duration(seconds: 1)); // simulasi loading
 
     if (isFirstTime) {
-      Get.offAllNamed(AppRoutes.welcome);
+      Get.offAllNamed(AppRoutes.onboarding);
     } else {
       Get.offAllNamed(AppRoutes.login);
     }

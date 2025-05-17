@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iofes_android_apps_smart_city/app/features/auth/register/controller/register_controller.dart';
 
 class RegisterKey extends StatelessWidget {
   RegisterKey({super.key});
 
-  final controller = Get.find();
+  final RegisterController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +52,9 @@ class RegisterKey extends StatelessWidget {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Password wajib diisi';
+                    }
                     if (value.length < 8) return 'Minimal 8 karakter';
                     if (!controller.isPasswordComplex(value)) {
                       return 'Harus ada huruf, angka, dan simbol';
@@ -72,10 +74,12 @@ class RegisterKey extends StatelessWidget {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Konfirmasi wajib diisi';
-                    if (value != controller.passwordController.text)
+                    }
+                    if (value != controller.passwordController.text) {
                       return 'Kata sandi tidak cocok';
+                    }
                     return null;
                   },
                 ),

@@ -11,7 +11,11 @@ class SettingsPage extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Pengaturan"), centerTitle: true),
+      appBar: AppBar(
+        title: Text("Settings"),
+        centerTitle: true,
+        
+      ),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
@@ -22,9 +26,9 @@ class SettingsPage extends StatelessWidget {
                 children: [
                   _CustomListTile(
                     title: "Dark Mode",
-                    icon: Icons.dark_mode_outlined,
+                    icon: CupertinoIcons.moon,
                     trailing: Obx(
-                      () => Switch.adaptive(
+                      () => CupertinoSwitch(
                         value: themeController.isDarkMode.value,
                         onChanged: (value) {
                           themeController.toggleTheme();
@@ -32,6 +36,7 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   const _CustomListTile(
                     title: "Notifications",
                     icon: Icons.notifications_none_rounded,
@@ -47,25 +52,39 @@ class SettingsPage extends StatelessWidget {
                 title: "Organization",
                 children: [
                   _CustomListTile(
-                      title: "Profile", icon: Icons.person_outline_rounded),
+                    title: "Profile",
+                    icon: Icons.person_outline_rounded,
+                  ),
                   _CustomListTile(
-                      title: "Messaging", icon: Icons.message_outlined),
+                    title: "Messaging",
+                    icon: Icons.message_outlined,
+                  ),
+                  _CustomListTile(title: "Calling", icon: Icons.phone_outlined),
                   _CustomListTile(
-                      title: "Calling", icon: Icons.phone_outlined),
+                    title: "People",
+                    icon: Icons.contacts_outlined,
+                  ),
                   _CustomListTile(
-                      title: "People", icon: Icons.contacts_outlined),
-                  _CustomListTile(
-                      title: "Calendar", icon: Icons.calendar_today_rounded),
+                    title: "Calendar",
+                    icon: Icons.calendar_today_rounded,
+                  ),
                 ],
               ),
               const Divider(),
               const _SingleSection(
                 children: [
                   _CustomListTile(
-                      title: "Help & Feedback",
-                      icon: Icons.help_outline_rounded),
-                  _CustomListTile(title: "About", icon: Icons.info_outline_rounded),
-                  _CustomListTile(title: "Sign out", icon: Icons.exit_to_app_rounded),
+                    title: "Help & Feedback",
+                    icon: Icons.help_outline_rounded,
+                  ),
+                  _CustomListTile(
+                    title: "About",
+                    icon: Icons.info_outline_rounded,
+                  ),
+                  _CustomListTile(
+                    title: "Sign out",
+                    icon: Icons.exit_to_app_rounded,
+                  ),
                 ],
               ),
             ],
@@ -81,11 +100,11 @@ class _CustomListTile extends StatelessWidget {
   final IconData icon;
   final Widget? trailing;
   const _CustomListTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +120,7 @@ class _CustomListTile extends StatelessWidget {
 class _SingleSection extends StatelessWidget {
   final String? title;
   final List<Widget> children;
-  const _SingleSection({
-    Key? key,
-    this.title,
-    required this.children,
-  }) : super(key: key);
+  const _SingleSection({super.key, this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {

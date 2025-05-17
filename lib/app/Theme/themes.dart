@@ -6,6 +6,7 @@ class AppThemes {
     scaffoldBackgroundColor:
         Colors.white, // Mengubah warna latar belakang menjadi putih
     primaryColor: Colors.white, // Mengubah warna primary menjadi putih
+    iconTheme: IconThemeData(color: const Color(0xFF2E382E)),
     inputDecorationTheme: InputDecorationTheme(
       fillColor:
           Colors.white, // Mengubah warna latar belakang input menjadi putih
@@ -45,6 +46,7 @@ class AppThemes {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: const Color(0xFF2E382E),
     primaryColor: const Color(0xFF2E382E),
+
     inputDecorationTheme: InputDecorationTheme(
       fillColor: const Color(0xFF2E382E),
       filled: true,

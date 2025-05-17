@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/features/Home/controllers/home_controller.dart';
-import 'package:iofes_android_apps_smart_city/app/features/report/view/report_view.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/Home/controllers/home_controller.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import 'package:iofes_android_apps_smart_city/app/widgets/text_widget.dart';
 
-import '../../bus_traking/view/map_screen.dart';
+import '../../../Theme/controller/theme_controller.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   // ini saya rubah hari ini 03/05/2025
-  final HomeController controller = Get.put<HomeController>(HomeController());
-
+  // final HomeController controller = Get.put<HomeController>(HomeController());
+  final HomeController controller = Get.find();
+  final isDark = Get.find<ThemeController>().isDark;
   // Daftar ikon untuk fitur
   final icons = [
     Icons.contact_phone_outlined,
@@ -29,20 +29,29 @@ class HomePage extends StatelessWidget {
   ];
 
   final feature = [
-    MapScreen(),
-    ReportScreen(),
-    MapScreen(),
-    MapScreen(),
+    null, // Untuk kontak penting
+    AppRoutes.report,
+    AppRoutes.report,
+    AppRoutes.bus_tracking, // Gunakan route yang sudah diperbaiki
   ];
 
   void handleFeatureTap(int index) {
-    print("Tapped: ${labels[index]}");
-    // Misalnya Get.toNamed('/kontak');
-    Get.toNamed(
-      AppRoutes.alarm,
-      arguments: {"title": labels[index], "icon": icons[index]},
-    );
+    if (index == 0) {
+      Get.snackbar('Info', 'Fitur kontak penting belum tersedia');
+      return;
+    }
+
+    Get.toNamed(feature[index]!); // Gunakan ! karena kita yakin tidak null
   }
+  // Perbaiki daftar navigasi berdasarkan index
+  // void handleFeatureTap(int index) {
+  //   final target = feature[index];
+  //   if (target is String) {
+  //     Get.toNamed(target); // ✅ akan jalankan binding otomatis
+  //   } else if (target is Widget) {
+  //     Get.to(() => target);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -105,16 +114,21 @@ class HomePage extends StatelessWidget {
               delegate: SliverChildBuilderDelegate((context, index) {
                 return GestureDetector(
                   onTap: () => handleFeatureTap(index),
-                  child: Card(
-                    color: Colors.teal[400],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    height: 136,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(icons[index], size: 30, color: Colors.white),
+                          Icon(icons[index], size: 30),
                           const SizedBox(height: 8),
                           TemplateText(
                             label: labels[index],
@@ -167,51 +181,74 @@ class HomePage extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final item = controller.newsList[index];
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+
+                  return Container(
+                    height: 136,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
                     ),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TemplateText(
-                            label: item.title,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          const SizedBox(height: 5),
-                          TemplateText(
-                            label: item.description,
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: const [
-                                  Icon(Icons.thumb_up_alt_outlined, size: 14),
-                                  SizedBox(width: 5),
-                                  TemplateText(
-                                    label: "120",
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ],
+                              Text(
+                                item.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              TemplateText(
-                                label: item.formattedTime,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
+                              const SizedBox(height: 8),
+                              Text(
+                                "${item.author} · ${item.formattedTime}",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children:
+                                    [
+                                      Icons.bookmark_border_rounded,
+                                      Icons.share,
+                                      Icons.more_vert,
+                                    ].map((e) {
+                                      return InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8.0,
+                                          ),
+                                          child: Icon(e, size: 16),
+                                        ),
+                                      );
+                                    }).toList(),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(8.0),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(item.imageUrl),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }, childCount: controller.newsList.length),
