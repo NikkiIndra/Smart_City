@@ -1,26 +1,34 @@
 import 'package:concentric_transition/concentric_transition.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // gunakan jika kamu pakai GetX
+import 'package:get/get.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/auth/login/widgets/login_page.dart';
 import '../../../routes/app_routes.dart';
 import '../models/page_mode.dart';
 
 final pages = [
   const PageData(
-    icon: Icons.food_bank_outlined,
-    title: "Search for your favourite food",
+    icon: CupertinoIcons.device_phone_portrait,
+    title: "Kemudahan hidup ada dalam genggaman kamu",
     bgColor: Color(0xff3b1791),
     textColor: Colors.white,
   ),
   const PageData(
-    icon: Icons.shopping_bag_outlined,
-    title: "Add it to cart",
+    icon: CupertinoIcons.news,
+    title: "Berani Melapor Untuk Kemajuan Bersama",
     bgColor: Color(0xfffab800),
     textColor: Color(0xff3b1790),
   ),
   const PageData(
-    icon: Icons.delivery_dining,
-    title: "Order and wait",
-    bgColor: Color(0xffffffff),
+    icon: CupertinoIcons.bus,
+    title: "Ketahui Lokasi Bus saat ini",
+    bgColor: Color(0xff3b1791),
+    textColor: Color(0xffffffff),
+  ),
+  const PageData(
+    icon: CupertinoIcons.lab_flask,
+    title: "Apakah anda siap untuk melihat masa depan...",
+    bgColor: Color(0xfffab800),
     textColor: Color(0xff3b1790),
   ),
 ];
@@ -43,9 +51,11 @@ class OnboardingPage extends StatelessWidget {
         itemCount: pages.length, // ✅ ini WAJIB agar tidak looping
         scaleFactor: 2,
         onFinish: () {
-          // ✅ Navigasi ke login saat selesai
-          Get.offAllNamed(AppRoutes.login);
+          Future.delayed(const Duration(milliseconds: 300), () {
+            Get.offAllNamed(AppRoutes.login);
+          });
         },
+
         itemBuilder: (index) {
           final page = pages[index];
           return SafeArea(child: _Page(page: page));

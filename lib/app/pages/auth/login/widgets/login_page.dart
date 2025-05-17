@@ -12,8 +12,9 @@ class LoginPage extends StatelessWidget {
   }
 
   bool isUserValid(String email, String password) {
-    return DataDummy.users.any((user) =>
-        user.email == email.trim() && user.password == password.trim());
+    return DataDummy.users.any(
+      (user) => user.email == email.trim() && user.password == password.trim(),
+    );
   }
 
   @override

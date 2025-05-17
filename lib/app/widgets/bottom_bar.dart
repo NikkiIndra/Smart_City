@@ -13,7 +13,9 @@ class NavBar extends StatelessWidget {
     return Obx(
       () => Scaffold(
         body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
+          reverseDuration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
+          switchInCurve: Curves.linear,
           child: controller.pages[controller.currentIndex.value],
         ),
         bottomNavigationBar: Container(
