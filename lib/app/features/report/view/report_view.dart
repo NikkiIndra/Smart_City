@@ -5,14 +5,15 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ReportScreen extends StatelessWidget {
   final ReportController controller = Get.find();
-
   ReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text("GPS"), centerTitle: true),
+      appBar: AppBar(title: Text("Lapor Kejadian"), centerTitle: true),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -25,19 +26,50 @@ class ReportScreen extends StatelessWidget {
                   key: controller.formKey,
                   child: Column(
                     children: [
+                      Obx(
+                        () => DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelText: "Jenis Laporan",
+                            border: OutlineInputBorder(),
+                          ),
+                          value:
+                              controller.jenisLaporan.value == ''
+                                  ? null
+                                  : controller.jenisLaporan.value,
+                          items:
+                              controller.pilihanLaporan.map((String jenis) {
+                                return DropdownMenuItem<String>(
+                                  value: jenis,
+                                  child: Text(jenis),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              controller.jenisLaporan.value = value;
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Pilih jenis laporan';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      SizedBox(height: height * 0.010),
                       TextFormField(
                         controller: controller.nameController,
                         decoration: InputDecoration(
-                          hintText: "Nama Lengkap",
+                          enabled: false,
+                          labelText: "nama",
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        validator: (value) =>
-                            (value == null || value.isEmpty) ? 'Nama tidak boleh kosong' : null,
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: height * 0.010),
                       Row(
                         children: [
                           Expanded(
@@ -47,7 +79,9 @@ class ReportScreen extends StatelessWidget {
                               readOnly: true,
                               onTap: () {
                                 if (!controller.gpsSelected.value) {
-                                  controller.showMsg('Silakan pilih lokasi GPS terlebih dahulu');
+                                  controller.showMsg(
+                                    'Klik tombol Gps unutk mendapatkan alamat',
+                                  );
                                 }
                               },
                               decoration: InputDecoration(
@@ -59,31 +93,40 @@ class ReportScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: width * 0.008),
                           Expanded(
                             flex: 2,
-                            child: Obx(() => ElevatedButton.icon(
-                                  onPressed: controller.isLoadingLocation.value
-                                      ? null
-                                      : controller.getLocation,
-                                  icon: Icon(Icons.location_on),
-                                  label: controller.isLoadingLocation.value
-                                      ? LoadingAnimationWidget.staggeredDotsWave(
+                            child: Obx(
+                              () => ElevatedButton.icon(
+                                onPressed:
+                                    controller.isLoadingLocation.value
+                                        ? null
+                                        : controller.getLocation,
+                                icon: Icon(Icons.location_on),
+                                label:
+                                    controller.isLoadingLocation.value
+                                        ? LoadingAnimationWidget.staggeredDotsWave(
                                           color: Colors.white,
                                           size: 20,
                                         )
-                                      : FittedBox(child: Text("Gps", style: TextStyle(fontSize: 17))),
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    padding: EdgeInsets.symmetric(vertical: 14),
+                                        : FittedBox(
+                                          child: Text(
+                                            "Gps",
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                )),
+                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: height * 0.010),
                       TextFormField(
                         controller: controller.dateController,
                         readOnly: true,
@@ -92,7 +135,6 @@ class ReportScreen extends StatelessWidget {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          prefixIcon: Icon(Icons.calendar_today),
                           suffixIcon: IconButton(
                             icon: Icon(Icons.date_range),
                             onPressed: () async {
@@ -115,46 +157,66 @@ class ReportScreen extends StatelessWidget {
                               "${today.day} ${controller.namaBulan(today.month)} ${today.year}";
                         },
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: height * 0.010),
                       GestureDetector(
                         onTap: controller.pickImageFromCamera,
                         child: Card(
+                          color: Colors.black54,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                           margin: EdgeInsets.all(5),
-                          child: Obx(() => Container(
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height * 0.25,
-                                padding: EdgeInsets.all(12),
-                                child: controller.image.value != null
-                                    ? Image.file(controller.image.value!, fit: BoxFit.cover)
-                                    : Center(
+                          child: Obx(
+                            () => Container(
+                              width: double.infinity,
+
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              padding: EdgeInsets.all(3),
+                              child:
+                                  controller.image.value != null
+                                      ? Image.file(
+                                        controller.image.value!,
+                                        fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.high,
+                                      )
+                                      : Center(
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text("Ambil Foto Dari Kamera"),
                                             SizedBox(height: 10),
-                                            Icon(Icons.camera_alt_rounded, size: 48),
+                                            Icon(
+                                              Icons.camera_alt_rounded,
+                                              size: 48,
+                                            ),
                                           ],
                                         ),
                                       ),
-                              )),
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: controller.submitForm,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                SizedBox(height: height * 0.15),
+                SizedBox(
+                  width: double.infinity, // Ini membuat tombol selebar layar
+                  height: 50, // Tinggi tombol
+                  child: ElevatedButton(
+                    onPressed: controller.submitForm,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 14,
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Text('Kirim'),
                   ),
-                  child: Text('Kirim'),
                 ),
               ],
             ),

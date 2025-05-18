@@ -29,46 +29,46 @@ class AppPages {
     GetPage(
       name: AppRoutes.login,
       page: () => LoginScreen(),
-      transition: Transition.leftToRightWithFade,
+      transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.register,
       page: () => RegisterScreen(),
-      transition: Transition.leftToRight,
+      transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.alarm,
       page: () => AlarmScreen(),
-      transition: Transition.fade,
+      transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.navbar,
       page: () => NavBar(),
-      transition: Transition.fade,
-      transitionDuration: Duration(seconds: 2),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.register_key,
       page: () => RegisterKey(),
       binding: RegisterBindins(),
-      transition: Transition.leftToRight,
+      transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.bus_tracking, // Gunakan yang sudah diperbaiki
       page: () => const MapScreen(),
       binding: BusTrackingBinding(), // Gunakan binding spesifik
-      transition: Transition.fade,
+      transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),
     ),
     GetPage(
       name: AppRoutes.report,
       page: () => ReportScreen(),
       binding: ReportBinding(),
-      transition: Transition.fade,
+      transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),
     ),
   ];

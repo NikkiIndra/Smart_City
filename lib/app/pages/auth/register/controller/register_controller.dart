@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../../../../routes/app_routes.dart';
 
 class RegisterController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -10,48 +9,51 @@ class RegisterController extends GetxController {
   final passwordController = TextEditingController();
   final confirmController = TextEditingController();
 
+  final isLoading = false.obs;
+  final isTrue = false.obs;
   final box = GetStorage();
 
-  // Cek apakah email sudah terdaftar
-  bool isEmailRegistered(String email) {
-    final rawEmails = box.read('registeredEmails') ?? [];
-    final List<String> emails = List<String>.from(
-      rawEmails.whereType<String>(),
-    );
-    return emails.contains(email.toLowerCase());
+  bool isEmailExists(String email) {
+    return box.read('email') == email.trim();
   }
 
-  // Validasi kompleksitas password
-  bool isPasswordComplex(String password) {
-    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(password);
-    final hasNumber = RegExp(r'\d').hasMatch(password);
-    final hasSymbol = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
-    return hasLetter && hasNumber && hasSymbol;
-  }
-
-  // Proses registrasi
   void registerUser() {
-    if (formKey.currentState!.validate()) {
-      final email = emailController.text.trim().toLowerCase();
-      final password = passwordController.text;
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirm = confirmController.text.trim();
 
-      final rawEmails = box.read('registeredEmails') ?? [];
-      final List<String> emails = List<String>.from(
-        rawEmails.whereType<String>(),
-      );
-
-      final rawUsers = box.read('users') ?? [];
-      final List<Map<dynamic, dynamic>> users =
-          rawUsers.map((e) => Map<String, String>.from(e)).toList();
-
-      emails.add(email);
-      users.add({'email': email, 'password': password});
-
-      box.write('registeredEmails', emails);
-      box.write('users', users);
-
-      Get.snackbar('Sukses', 'Akun berhasil dibuat');
-      Get.offAllNamed(AppRoutes.navbar);
+    if (email.isEmpty || password.isEmpty || confirm.isEmpty) {
+      Get.snackbar('Error', 'Semua field wajib diisi');
+      return;
     }
+
+    if (!email.contains('@') || !email.contains('.')) {
+      Get.snackbar('Error', 'Email tidak valid');
+      return;
+    }
+
+    if (password != confirm) {
+      Get.snackbar('Error', 'Password tidak sama');
+      return;
+    }
+
+    if (isEmailExists(email)) {
+      Get.snackbar('Error', 'Email sudah terdaftar');
+      return;
+    }
+
+    box.write('email', email);
+    box.write('password', password);
+
+    Get.snackbar('Berhasil', 'Registrasi sukses, silakan login');
+    Get.back(); // Kembali ke login
+  }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmController.dispose();
+    super.onClose();
   }
 }

@@ -44,30 +44,27 @@ class RegisterPage extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 _buildInputField(
-                  icon: Icons.badge,
                   labelText: "Nama Sesuai KTP",
                   onChanged: (value) => controller.namaKtp = value,
+                  
+
                 ),
                 _buildInputField(
-                  icon: Icons.phone,
                   labelText: "No. Telepon",
                   keyboardType: TextInputType.phone,
                   onChanged: (value) => controller.noTelepon = value,
                 ),
                 _buildInputField(
-                  icon: Icons.home,
                   labelText: "Rukun Tetangga (RT)",
                   keyboardType: TextInputType.number,
                   onChanged: (value) => controller.rt = value,
                 ),
                 _buildInputField(
-                  icon: Icons.home,
                   labelText: "Rukun Warga (RW)",
                   keyboardType: TextInputType.number,
                   onChanged: (value) => controller.rw = value,
                 ),
                 _buildInputField(
-                  icon: Icons.location_city,
                   labelText: "Nama Desa",
                   onChanged: (value) => controller.namaDesa = value,
                 ),
@@ -89,7 +86,7 @@ class RegisterPage extends StatelessWidget {
                         storage.write('rt', controller.rt);
                         storage.write('rw', controller.rw);
                         storage.write('namaDesa', controller.namaDesa);
-
+                         print("Data tersimpan: ${storage.read('namaKtp')}");
                         controller.submitForm(context, AppRoutes.register_key);
                       }
                     },
@@ -105,7 +102,6 @@ class RegisterPage extends StatelessWidget {
   }
 
   Widget _buildInputField({
-    required IconData icon,
     required String labelText,
     bool obscure = false,
     TextInputType? keyboardType,
@@ -118,13 +114,13 @@ class RegisterPage extends StatelessWidget {
         decoration: InputDecoration(
           labelText: labelText,
           border: const OutlineInputBorder(),
-          prefixIcon: Icon(icon, color: Colors.green),
         ),
         keyboardType: keyboardType,
         cursorColor: Colors.green,
         textInputAction: TextInputAction.next,
         onChanged: onChanged,
         validator: (value) {
+        print("Data tersimpan: ${storage.read('namaKtp')}");
           if (value == null || value.isEmpty) {
             return 'Field ini tidak boleh kosong';
           }

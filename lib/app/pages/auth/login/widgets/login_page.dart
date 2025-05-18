@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import '../../../../widgets/loading_widget.dart';
-import '../models/dataDummy.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+   LoginPage({super.key});
+
+  final box = GetStorage();
 
   bool isEmailRegistered(String email) {
-    return DataDummy.users.any((user) => user.email == email);
+    return box.read('email') == email.trim();
   }
 
   bool isUserValid(String email, String password) {
-    return DataDummy.users.any(
-      (user) => user.email == email.trim() && user.password == password.trim(),
-    );
+    return box.read('email') == email.trim() &&
+           box.read('password') == password.trim();
   }
 
   @override
