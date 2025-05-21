@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../service/location_service.dart';
 
 class ReportController extends GetxController {
@@ -25,16 +26,28 @@ class ReportController extends GetxController {
 
   final _namaBulan = [
     '',
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
   ];
   String namaBulan(int bulan) => _namaBulan[bulan];
 
-  final List<String> pilihanLaporan = ['Kebakaran', 'Penumpukan Sampah', 'Jalan Berlubang', 'Butuh Duit buat jajan'];
+  final List<String> pilihanLaporan = [
+    'Kebakaran',
+    'Penumpukan Sampah',
+    'Jalan Berlubang',
+    'Butuh Duit buat jajan',
+  ];
   var jenisLaporan = ''.obs;
-
-
-
 
   Future<void> getLocation() async {
     isLoadingLocation.value = true;
@@ -44,35 +57,53 @@ class ReportController extends GetxController {
     gpsSelected.value = result.isNotEmpty;
     isLoadingLocation.value = false;
 
-    if(result.contains('Gagal mendapatkan alamat')){
-      showMsg(result);
+    if (result.contains('Gagal mendapatkan alamat')) {
+      showMsg("Gagal mendapatkan alamat");
       gpsSelected.value = false;
-    }
-    else if(result.contains('not internet')){
+    } else if (result.contains('not internet')) {
       showMsg("Internet tidak stabil atau tidak tersedia");
       gpsSelected.value = false;
-    }
-    else if( result.contains('Gagal mengakses internet')){
-      showMsg(result);
+    } else if (result.contains('Gagal mengakses internet')) {
+      showMsg("Gagal mengakses internet");
       gpsSelected.value = false;
-    }
-    else if( result.contains('GPS')){
+    } else if (result.contains('GPS')) {
       showMsg("Aktifkan Gps Terlebih dahulu");
       gpsSelected.value = false;
-    }
-    else{
+    } else {
       gpsSelected.value = true;
     }
   }
-
-
 
   void showMsg(String msg) {
     Get.snackbar('Pesan', msg);
   }
 
   Future<void> pickImageFromCamera() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    
+    final cameraStatus = await Permission.camera.status;
+
+    if (cameraStatus.isDenied) {
+      // Jika permission sebelumnya ditolak, minta izin lagi
+      final newStatus = await Permission.camera.request();
+      if (!newStatus.isGranted) {
+        Get.snackbar('Akses Ditolak', 'Izin kamera dibutuhkan');
+        return;
+      }
+    } else if (cameraStatus.isPermanentlyDenied) {
+      // Jika pengguna memilih "Jangan tanya lagi"
+      Get.snackbar(
+        'Izin Kamera Diperlukan',
+        'Silakan aktifkan izin kamera di pengaturan',
+      );
+      openAppSettings(); // Arahkan ke setting
+      return;
+    }
+
+    // Sudah diizinkan, ambil gambar
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    );
     if (pickedFile != null) {
       image.value = File(pickedFile.path);
     }
@@ -81,8 +112,11 @@ class ReportController extends GetxController {
   void submitForm() {
     if (formKey.currentState!.validate() && gpsSelected.value) {
       showMsg('Form berhasil dikirim');
-    } 
-    else {
+    }
+    if (image.value == null) {
+      showMsg('Ambil foto terlebih dahulu');
+      return;
+    } else {
       showMsg('Pastikan semua field sudah diisi dan GPS dipilih');
     }
   }

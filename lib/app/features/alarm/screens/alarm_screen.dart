@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/alarm_page.dart';
+import '../view/alarm_page.dart';
 
 class AlarmScreen extends StatelessWidget {
   const AlarmScreen({super.key});

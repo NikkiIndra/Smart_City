@@ -56,7 +56,6 @@ class ReportScreen extends StatelessWidget {
                           },
                         ),
                       ),
-
                       SizedBox(height: height * 0.010),
                       TextFormField(
                         controller: controller.nameController,
@@ -169,7 +168,6 @@ class ReportScreen extends StatelessWidget {
                           child: Obx(
                             () => Container(
                               width: double.infinity,
-
                               height: MediaQuery.of(context).size.height * 0.3,
                               padding: EdgeInsets.all(3),
                               child:

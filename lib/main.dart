@@ -4,6 +4,7 @@
 
 // import 'app/Theme/controller/theme_controller.dart';
 // import 'app/Theme/themes.dart';
+
 // import 'app/bindings/global_binding.dart';
 // import 'app/routes/app_pages.dart';
 // import 'app/routes/app_routes.dart';
@@ -47,15 +48,10 @@ import 'package:iofes_android_apps_smart_city/my_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inisialisasi GetStorage
   await GetStorage.init();
 
-  final box = GetStorage();
-  final isFirstTime = box.read('isfirsttime') ?? true;
-  final isLoggedIn = box.read('is_logged_in') ?? false;
   final themeController = Get.put(ThemeController());
-  await themeController.loadTheme(); // tidak perlu ubah jika dalam controller pakai GetStorage
+  await themeController.loadTheme();
 
-  runApp(MyApp(isFirstTime: isFirstTime, isLoggedIn: isLoggedIn));
+  runApp(const MyApp());
 }

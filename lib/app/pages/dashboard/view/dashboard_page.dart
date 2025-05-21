@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/pages/Home/controllers/home_controller.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/dashboard/controllers/dashboard_controller.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import 'package:iofes_android_apps_smart_city/app/widgets/text_widget.dart';
 
 import '../../../Theme/controller/theme_controller.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class DashboardPage extends StatelessWidget {
+  DashboardPage({super.key});
 
   // ini saya rubah hari ini 03/05/2025
   // final HomeController controller = Get.put<HomeController>(HomeController());
-  final HomeController controller = Get.find();
+  final DashboardController controller = Get.find();
   final isDark = Get.find<ThemeController>().isDark;
   // Daftar ikon untuk fitur
   final icons = [
@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
   final feature = [
     null, // Untuk kontak penting
     AppRoutes.report,
-    AppRoutes.report,
+    AppRoutes.alarm, // untuk peringatan bahaya
     AppRoutes.bus_tracking, // Gunakan route yang sudah diperbaiki
   ];
 
@@ -40,18 +40,9 @@ class HomePage extends StatelessWidget {
       Get.snackbar('Info', 'Fitur kontak penting belum tersedia');
       return;
     }
-
     Get.toNamed(feature[index]!); // Gunakan ! karena kita yakin tidak null
   }
-  // Perbaiki daftar navigasi berdasarkan index
-  // void handleFeatureTap(int index) {
-  //   final target = feature[index];
-  //   if (target is String) {
-  //     Get.toNamed(target); // ✅ akan jalankan binding otomatis
-  //   } else if (target is Widget) {
-  //     Get.to(() => target);
-  //   }
-  // }
+
 
   @override
   Widget build(BuildContext context) {

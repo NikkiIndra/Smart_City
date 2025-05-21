@@ -86,7 +86,6 @@ class RegisterPage extends StatelessWidget {
                         storage.write('rt', controller.rt);
                         storage.write('rw', controller.rw);
                         storage.write('namaDesa', controller.namaDesa);
-                         print("Data tersimpan: ${storage.read('namaKtp')}");
                         controller.submitForm(context, AppRoutes.register_key);
                       }
                     },
@@ -120,7 +119,6 @@ class RegisterPage extends StatelessWidget {
         textInputAction: TextInputAction.next,
         onChanged: onChanged,
         validator: (value) {
-        print("Data tersimpan: ${storage.read('namaKtp')}");
           if (value == null || value.isEmpty) {
             return 'Field ini tidak boleh kosong';
           }

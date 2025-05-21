@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import '../models/news_item.dart';
 
-class HomeController extends GetxController {
+class DashboardController extends GetxController {
   var newsList = <NewsModel>[].obs;
   var isLoading = true.obs;
 

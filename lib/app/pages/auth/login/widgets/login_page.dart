@@ -5,17 +5,39 @@ import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
 import '../../../../widgets/loading_widget.dart';
 
 class LoginPage extends StatelessWidget {
-   LoginPage({super.key});
+  LoginPage({super.key});
 
   final box = GetStorage();
 
   bool isEmailRegistered(String email) {
-    return box.read('email') == email.trim();
+    List<dynamic> users = box.read('users') ?? [];
+    return users.any((user) => user['email'] == email.trim());
   }
 
   bool isUserValid(String email, String password) {
-    return box.read('email') == email.trim() &&
-           box.read('password') == password.trim();
+    List<dynamic> users = box.read('users') ?? [];
+    return users.any((user) =>
+        user['email'] == email.trim() && user['password'] == password.trim());
+  }
+
+  void loginUser(BuildContext context, String email, String password) {
+    if (isUserValid(email, password)) {
+      box.write('isloggedin', true);
+      Get.snackbar(
+        "Login Berhasil",
+        "Selamat datang!",
+        backgroundColor: Colors.transparent,
+        colorText: Colors.white,
+      );
+      Get.offAllNamed(AppRoutes.navbar);
+    } else {
+      Get.snackbar(
+        "Login Gagal",
+        "Email atau password salah",
+        backgroundColor: Colors.transparent,
+        colorText: Colors.red,
+      );
+    }
   }
 
   @override
@@ -58,7 +80,7 @@ class LoginPage extends StatelessWidget {
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
                   ),
@@ -105,14 +127,17 @@ class LoginPage extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (formKeyLogin.currentState!.validate()) {
-                        print("berhasil login");
+                        final email = emailController.text.trim();
+                        final password = passwordController.text.trim();
+
                         LoadingWidget.showLoading(
                           context,
                           message: "Memverifikasi...",
                         );
+
                         Future.delayed(const Duration(seconds: 2), () {
                           LoadingWidget.hideLoading(context);
-                          Get.offAllNamed(AppRoutes.navbar);
+                          loginUser(context, email, password);
                         });
                       }
                     },

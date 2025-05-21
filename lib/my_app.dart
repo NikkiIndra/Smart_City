@@ -5,29 +5,14 @@ import 'app/Theme/controller/theme_controller.dart';
 import 'app/Theme/themes.dart';
 import 'app/bindings/global_binding.dart';
 import 'app/routes/app_pages.dart';
-import 'app/routes/app_routes.dart';
+import 'app/widgets/splesh_screen.dart';
 
 class MyApp extends StatelessWidget {
-  final bool isFirstTime;
-  final bool isLoggedIn;
-  const MyApp({
-    super.key,
-    required this.isFirstTime,
-    required this.isLoggedIn,
-  });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-
-    String initialRoute;
-    if (isFirstTime) {
-      initialRoute = AppRoutes.onboarding;
-    } else if (isLoggedIn) {
-      initialRoute = AppRoutes.navbar; // atau dashboard page Anda
-    } else {
-      initialRoute = AppRoutes.login;
-    }
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -36,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
       themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
-      initialRoute: initialRoute,
+      home: const SplashScreen(), // ✅ Panggil SplashScreen dulu, dia yang arahkan
       getPages: AppPages.pages,
     );
   }

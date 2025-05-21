@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iofes_android_apps_smart_city/app/routes/app_routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
-  Future<void> _initApp() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isFirstTime = prefs.getBool('isfirsttime') ?? true;
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
 
-    await Future.delayed(const Duration(seconds: 1)); // simulasi loading
+class _SplashScreenState extends State<SplashScreen> {
+  final box = GetStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFirstTime();
+  }
+
+   void _checkFirstTime() async {
+    await Future.delayed(const Duration(seconds: 2)); // simulasi loading
+    bool isFirstTime = box.read('isfirsttime') ?? true;
+    bool isLoggedIn = box.read('is_logged_in') ?? false;
 
     if (isFirstTime) {
-      Get.offAllNamed(AppRoutes.onboarding);
+      box.write('isfirsttime', false);
+      Get.offAllNamed(AppRoutes.onboarding); // arahkan ke onboarding
     } else {
-      Get.offAllNamed(AppRoutes.login);
+      if (isLoggedIn) {
+        Get.offAllNamed(AppRoutes.navbar); // arahkan ke navbar
+      } else {
+        Get.offAllNamed(AppRoutes.login); // arahkan ke login
+      }
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 2), () {
-      // lanjut ke welcome/login
-      _initApp(); // panggil langsung saat build
-    });
-
     return const Scaffold(
-      backgroundColor: Color(0xFF50C9CE),
+      backgroundColor: Colors.white,
       body: Center(
         child: CircularProgressIndicator(color: Color(0xFF2E382E)),
       ),

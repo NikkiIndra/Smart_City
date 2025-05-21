@@ -78,21 +78,10 @@ class AuthController extends GetxController {
   }
 
   void login(String emailInput, String passwordInput) {
-    List<Map<String, dynamic>> users = box.read('users') ?? [];
-
-    bool found = false;
-    for (var user in users) {
-      if (user['email'] == emailInput && user['password'] == passwordInput) {
-        found = true;
-        break;
-      }
-    }
-
-    if (found) {
+    if (isUserValid(emailInput, passwordInput)) {
       Get.snackbar(
         "Login Berhasil",
         "Selamat datang!",
-        backgroundColor: Colors.green,
         colorText: Colors.white,
       );
 
@@ -104,8 +93,7 @@ class AuthController extends GetxController {
       Get.snackbar(
         "Login Gagal",
         "Email atau password salah",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+        colorText: Colors.red,
       );
     }
   }

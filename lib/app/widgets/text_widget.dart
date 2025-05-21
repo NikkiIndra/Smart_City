@@ -29,6 +29,11 @@ class TemplateText extends StatelessWidget {
       fontFamily: 'Poppins',
     );
 
-    return Text(label, textAlign: TextAlign.center, style: textStyle);
+    return Text(
+      label,
+      textAlign: TextAlign.center,
+      style: textStyle,
+      softWrap: true,
+    );
   }
 }

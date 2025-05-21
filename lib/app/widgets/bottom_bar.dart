@@ -11,6 +11,7 @@ class NavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
+      
       () => Scaffold(
         body: AnimatedSwitcher(
           reverseDuration: Duration(seconds: 1),

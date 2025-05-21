@@ -62,7 +62,7 @@ class LocationService {
       return 'Internet lambat, gagal mendapatkan alamat';
     
     } catch (e) {
-      return 'Gagal mendapatkan alamat: ${e.toString()}';
+      return 'Gagal mendapatkan alamat';
     }
   }
 }

@@ -9,7 +9,11 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profil Saya"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text("Profil Saya"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -24,7 +28,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-
             // Nama dan Email
             const Text(
               "Darwis Setiawan",

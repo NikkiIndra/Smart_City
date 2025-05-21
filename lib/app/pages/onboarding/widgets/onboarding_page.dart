@@ -2,7 +2,6 @@ import 'package:concentric_transition/concentric_transition.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iofes_android_apps_smart_city/app/pages/auth/login/widgets/login_page.dart';
 import '../../../routes/app_routes.dart';
 import '../models/page_mode.dart';
 
@@ -10,31 +9,31 @@ final pages = [
   const PageData(
     icon: CupertinoIcons.device_phone_portrait,
     title: "Kemudahan hidup ada dalam genggaman kamu",
-    bgColor: Color(0xff3b1791),
-    textColor: Colors.white,
+    bgColor: Colors.white,
+    textColor: Colors.black,
   ),
   const PageData(
     icon: CupertinoIcons.news,
     title: "Berani Melapor Untuk Kemajuan Bersama",
-    bgColor: Color(0xfffab800),
-    textColor: Color(0xff3b1790),
+    bgColor: Colors.white,
+    textColor: Colors.black,
   ),
   const PageData(
     icon: CupertinoIcons.bus,
     title: "Ketahui Lokasi Bus saat ini",
-    bgColor: Color(0xff3b1791),
-    textColor: Color(0xffffffff),
+    bgColor: Colors.white,
+    textColor: Colors.black,
   ),
   const PageData(
     icon: CupertinoIcons.lab_flask,
     title: "Apakah anda siap untuk melihat masa depan...",
-    bgColor: Color(0xfffab800),
-    textColor: Color(0xff3b1790),
+    bgColor: Colors.white,
+    textColor: Colors.black,
   ),
 ];
 
 class OnboardingPage extends StatelessWidget {
-  const OnboardingPage({Key? key}) : super(key: key);
+  const OnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,17 @@ class OnboardingPage extends StatelessWidget {
         nextButtonBuilder:
             (context) => Padding(
               padding: const EdgeInsets.only(left: 3),
-              child: Icon(Icons.navigate_next, size: screenWidth * 0.08),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black,
+                ),
+                child: Icon(
+                  Icons.navigate_next,
+                  size: screenWidth * 0.08,
+                  color: Colors.white,
+                ),
+              ),
             ),
         itemCount: pages.length, // ✅ ini WAJIB agar tidak looping
         scaleFactor: 2,
@@ -68,33 +77,40 @@ class OnboardingPage extends StatelessWidget {
 class _Page extends StatelessWidget {
   final PageData page;
 
-  const _Page({Key? key, required this.page}) : super(key: key);
+  const _Page({super.key, required this.page});
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          margin: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: page.textColor,
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: page.textColor,
+            ),
+            child: Icon(
+              page.icon,
+              size: screenHeight * 0.1,
+              color: page.bgColor,
+            ),
           ),
-          child: Icon(page.icon, size: screenHeight * 0.1, color: page.bgColor),
-        ),
-        Text(
-          page.title ?? "",
-          style: TextStyle(
-            color: page.textColor,
-            fontSize: screenHeight * 0.035,
-            fontWeight: FontWeight.bold,
+          Text(
+            page.title ?? "",
+            style: TextStyle(
+              color: page.textColor,
+              fontSize: screenHeight * 0.015,
+              fontWeight: FontWeight.w300,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
