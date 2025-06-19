@@ -23,7 +23,7 @@ class ReportScreen extends StatelessWidget {
             child: Column(
               children: [
                 Form(
-                  key: controller.formKey,
+                  // key: controller.formKeyDropdown,
                   child: Column(
                     children: [
                       Obx(
@@ -76,6 +76,7 @@ class ReportScreen extends StatelessWidget {
                             child: TextField(
                               controller: controller.addressController,
                               readOnly: true,
+                              showCursor: false,
                               onTap: () {
                                 if (!controller.gpsSelected.value) {
                                   controller.showMsg(
@@ -164,9 +165,9 @@ class ReportScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          margin: EdgeInsets.all(5),
                           child: Obx(
                             () => Container(
+                              color: Theme.of(context).primaryColor,
                               width: double.infinity,
                               height: MediaQuery.of(context).size.height * 0.3,
                               padding: EdgeInsets.all(3),
@@ -203,7 +204,10 @@ class ReportScreen extends StatelessWidget {
                   width: double.infinity, // Ini membuat tombol selebar layar
                   height: 50, // Tinggi tombol
                   child: ElevatedButton(
-                    onPressed: controller.submitForm,
+                    onPressed:
+                        controller.isSubmitting.value
+                            ? null
+                            : controller.submitForm,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),

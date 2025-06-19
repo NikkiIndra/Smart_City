@@ -77,7 +77,7 @@ class OnboardingPage extends StatelessWidget {
 class _Page extends StatelessWidget {
   final PageData page;
 
-  const _Page({super.key, required this.page});
+  const _Page({required this.page});
 
   @override
   Widget build(BuildContext context) {

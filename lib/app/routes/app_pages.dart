@@ -71,7 +71,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.bus_tracking, // Gunakan yang sudah diperbaiki
-      page: () => const MapScreen(),
+      page: () => MapScreen(),
       binding: BusTrackingBinding(), // Gunakan binding spesifik
       transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),

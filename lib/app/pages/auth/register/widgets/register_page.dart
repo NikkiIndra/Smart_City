@@ -46,8 +46,6 @@ class RegisterPage extends StatelessWidget {
                 _buildInputField(
                   labelText: "Nama Sesuai KTP",
                   onChanged: (value) => controller.namaKtp = value,
-                  
-
                 ),
                 _buildInputField(
                   labelText: "No. Telepon",
@@ -91,6 +89,29 @@ class RegisterPage extends StatelessWidget {
                     },
                     child: const Text("Daftar"),
                   ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "sudah punya akun?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.login);
+                      },
+                      child: const Text(
+                        "login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF06D6A0),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

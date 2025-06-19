@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../controllers/alarm_controller.dart';
 import '../view/alarm_page.dart';
 
 class AlarmScreen extends StatelessWidget {
-  const AlarmScreen({super.key});
+  AlarmScreen({super.key});
+
+  final controller = Get.put(AlarmController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: AlarmPage(),);
+    return Scaffold(body: AlarmPage());
   }
 }

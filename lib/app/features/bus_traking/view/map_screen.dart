@@ -1,4 +1,6 @@
 // lib/features/bustracking/views/map_screen.dart
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
@@ -7,76 +9,98 @@ import 'package:latlong2/latlong.dart';
 import '../controllers/bustraking_controller.dart';
 
 class MapScreen extends GetView<BusTrackingController> {
-  const MapScreen({super.key});
+  MapScreen({super.key});
+
+  BusTrackingController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Bus Tracker'), centerTitle: true),
       body: Obx(() {
+        
         final isFullScreen = controller.isFullScreen.value;
         return Column(
           children: [
             Expanded(
               flex: isFullScreen ? 10 : 5,
-              child: Stack(
-                children: [
-                  FlutterMap(
-                    mapController: controller.mapController,
-                    options: const MapOptions(
-                      initialCenter: LatLng(-6.200000, 106.816666),
-                      initialZoom: 14.0,
-                      maxZoom: 30.0,
-                      minZoom: 5.0,
+              child: Obx(() {
+                if (!controller.mapReady.value) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: CircularProgressIndicator(),
                     ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  );
+                }
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  // Start location update hanya 1x, setelah FlutterMap tampil
+                  if (controller.timer == null) {
+                    controller
+                        .startLocationUpdates(); // Panggil secara aman di UI thread
+                  }
+                });
+                return Stack(
+                  children: [
+                    FlutterMap(
+                      mapController: controller.mapController,
+                      options: const MapOptions(
+                        initialCenter: LatLng(-6.200000, 106.816666),
+                        initialZoom: 14.0,
+                        maxZoom: 30.0,
+                        minZoom: 5.0,
                       ),
-                      PolylineLayer(
-                        polylines: controller.busRoutes,
-                        // polylines: [
-                        //   if (controller.locationHistory.isNotEmpty)
-                        //     Polyline(
-                        //       points: controller.locationHistory,
-                        //       color: Colors.blue,
-                        //       strokeWidth: 4.0,
-                        //     ),
-                        // ],
-                      ),
-                      // MarkerLayer(markers: controller.markers),
-                      // MarkerLayer(
-                      //   markers: [
-                      //     ...controller.busRouteMarkers,
-                      //     ...controller.markers, // Marker posisi real-time bus
-                      //   ],
-                      // ),
-                      MarkerLayer(
-                        markers: [
-                          ...controller.busRouteMarkers,
-                          if (controller.realTimeBusBMarker != null)
-                            controller.realTimeBusBMarker!,
-                        ],
-                      ),
-                    ],
-                  ),
-                  // Tombol Fullscreen/Minimize
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: FloatingActionButton(
-                      mini: true,
-                      backgroundColor: Colors.white,
-                      onPressed: controller.toggleFullScreen,
-                      child: Icon(
-                        isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                        color: Colors.black,
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        ),
+                        PolylineLayer(
+                          polylines: controller.busRoutes,
+                          // polylines: [
+                          //   if (controller.locationHistory.isNotEmpty)
+                          //     Polyline(
+                          //       points: controller.locationHistory,
+                          //       color: Colors.blue,
+                          //       strokeWidth: 4.0,
+                          //     ),
+                          // ],
+                        ),
+                        // MarkerLayer(markers: controller.markers),
+                        // MarkerLayer(
+                        //   markers: [
+                        //     ...controller.busRouteMarkers,
+                        //     ...controller.markers, // Marker posisi real-time bus
+                        //   ],
+                        // ),
+                        MarkerLayer(
+                          markers: [
+                            ...controller.busRouteMarkers,
+                            if (controller.realTimeBusBMarker != null)
+                              controller.realTimeBusBMarker!,
+                          ],
+                        ),
+                      ],
+                    ),
+                    // Tombol Fullscreen/Minimize
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: FloatingActionButton(
+                        mini: true,
+                        backgroundColor: Colors.white,
+                        onPressed: controller.toggleFullScreen,
+                        child: Icon(
+                          isFullScreen
+                              ? Icons.fullscreen_exit
+                              : Icons.fullscreen,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
             ),
 
             // Jika Fullscreen: jangan tampilkan info
@@ -116,10 +140,6 @@ class MapScreen extends GetView<BusTrackingController> {
           ],
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.fitAllBusRoutes,
-        child: const Icon(Icons.fullscreen),
-      ),
     );
   }
 

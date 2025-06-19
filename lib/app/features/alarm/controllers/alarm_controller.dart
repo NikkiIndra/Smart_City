@@ -8,5 +8,4 @@ class AlarmController extends GetxController {
   void addAlarm(String alarmName) {
     alarms.add(alarmName);
   }
-
 }

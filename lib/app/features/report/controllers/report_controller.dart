@@ -7,13 +7,13 @@ import 'package:permission_handler/permission_handler.dart';
 import '../service/location_service.dart';
 
 class ReportController extends GetxController {
-  final formKey = GlobalKey<FormState>();
   final addressController = TextEditingController();
   final nameController = TextEditingController();
   final dateController = TextEditingController();
   var alamat = ''.obs;
   var gpsSelected = false.obs;
   var isLoadingLocation = false.obs;
+  var isSubmitting = false.obs;
   var address = ''.obs;
   var image = Rxn<File>();
   final box = GetStorage();
@@ -22,6 +22,13 @@ class ReportController extends GetxController {
   void onInit() {
     super.onInit();
     nameController.text = box.read('namaKtp') ?? '';
+  }
+
+  void dispose() {
+    super.dispose();
+    addressController.dispose();
+    nameController.dispose();
+    dateController.dispose();
   }
 
   final _namaBulan = [
@@ -48,7 +55,6 @@ class ReportController extends GetxController {
     'Butuh Duit buat jajan',
   ];
   var jenisLaporan = ''.obs;
-
   Future<void> getLocation() async {
     isLoadingLocation.value = true;
     final result = await LocationService.getAddressFromGPS();
@@ -79,8 +85,6 @@ class ReportController extends GetxController {
   }
 
   Future<void> pickImageFromCamera() async {
-
-    
     final cameraStatus = await Permission.camera.status;
 
     if (cameraStatus.isDenied) {
@@ -109,16 +113,40 @@ class ReportController extends GetxController {
     }
   }
 
-  void submitForm() {
-    if (formKey.currentState!.validate() && gpsSelected.value) {
-      showMsg('Form berhasil dikirim');
+  void submitForm() async {
+    // jika form valid dan GPS dipilih ,tampilkan pesan
+    // if (formKeyDropdown.currentState!.validate() && gpsSelected.value) {
+    if (jenisLaporan.value.isEmpty) {
+      showMsg('pilih jenis laporan terlebih dahulu');
+      return;
+    }
+    if (gpsSelected.value == false) {
+      showMsg('Pilih GPS terlebih dahulu');
+      return;
+    }
+    if (addressController.text.isEmpty) {
+      showMsg('Alamat belum diambil');
+      return;
+    }
+    if (dateController.text.isEmpty) {
+      showMsg('Tanggal kejadian belum diisi');
+      return;
     }
     if (image.value == null) {
       showMsg('Ambil foto terlebih dahulu');
       return;
-    } else {
-      showMsg('Pastikan semua field sudah diisi dan GPS dipilih');
     }
+    await _submitData();
+  }
+
+  Future<void> _submitData() async {
+    isSubmitting.value = true;
+    // Simulasi submit data
+    isSubmitting.value = false;
+    await Future.delayed(Duration(seconds: 1)); // replace with API call
+    
+    // Setelah sukses, keluar dari halaman
+    Get.back(); // atau Get.offAll() kalau perlu
   }
 
   @override

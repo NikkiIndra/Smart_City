@@ -30,10 +30,14 @@ class RegisterKey extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: screenHeight * 0.02),
-              const Text(
-                "Let's Goooo",
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Daftarkan Email",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
               ),
+
               Image.asset("assets/img/logo.jpeg", height: 150),
               SizedBox(height: 20),
               TextFormField(
@@ -112,8 +116,14 @@ class RegisterKey extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: screenHeight * 0.1),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onPressed: () {
                   final email = controller.emailController.text.trim();
                   final password = controller.passwordController.text.trim();
@@ -149,6 +159,29 @@ class RegisterKey extends StatelessWidget {
 
                 child: Text("daftar"),
               ),
+              SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "sudah punya akun?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.login);
+                      },
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF06D6A0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
