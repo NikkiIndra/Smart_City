@@ -14,6 +14,7 @@ final pages = [
   ),
   const PageData(
     icon: CupertinoIcons.news,
+
     title: "Berani Melapor Untuk Kemajuan Bersama",
     bgColor: Colors.white,
     textColor: Colors.black,
@@ -82,35 +83,41 @@ class _Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            margin: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: page.textColor,
-            ),
-            child: Icon(
-              page.icon,
-              size: screenHeight * 0.1,
-              color: page.bgColor,
-            ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: page.textColor,
+                ),
+                child: Icon(
+                  page.icon,
+                  size: screenHeight * 0.1,
+                  color: page.bgColor,
+                ),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                page.title ?? "",
+                style: TextStyle(
+                  color: page.textColor,
+                  fontSize: screenHeight * 0.030,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          Text(
-            page.title ?? "",
-            style: TextStyle(
-              color: page.textColor,
-              fontSize: screenHeight * 0.015,
-              fontWeight: FontWeight.w300,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

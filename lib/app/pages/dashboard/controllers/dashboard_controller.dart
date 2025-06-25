@@ -1,10 +1,14 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import '../models/news_item.dart';
 
 class DashboardController extends GetxController {
   var newsList = <NewsModel>[].obs;
   var isLoading = true.obs;
+  final name = "".obs;
+  final box = GetStorage();
 
+  
   List<String> labels = [
     "kontak penting",
     "Lapor Insiden",
@@ -15,6 +19,7 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    name.value = box.read('namaKtp') ?? '';
     loadNews();
   }
 

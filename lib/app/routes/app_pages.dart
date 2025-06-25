@@ -4,8 +4,9 @@ import 'package:iofes_android_apps_smart_city/app/bindings/report_binding.dart';
 import 'package:iofes_android_apps_smart_city/app/features/alarm/screens/alarm_screen.dart';
 import 'package:iofes_android_apps_smart_city/app/features/alarm/view/alarm_page.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/auth/register/screens/register_screen.dart';
-import 'package:iofes_android_apps_smart_city/app/pages/auth/register/widgets/register_key.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/auth/register/view/register_key.dart';
 import 'package:iofes_android_apps_smart_city/app/features/report/view/report_view.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/profile/view/profile_page.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/settings/widgets/setting_page.dart';
 import '../bindings/bus_tracking_bindings.dart';
 import '../bindings/register_binding.dart';
@@ -93,6 +94,13 @@ class AppPages {
     GetPage(
       name: AppRoutes.alarm,
       page: () => AlarmPage(),
+      binding: GlobalBindings(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(seconds: 1),
+    ),
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => ProfilePage(),
       binding: GlobalBindings(),
       transition: Transition.cupertino,
       transitionDuration: Duration(seconds: 1),

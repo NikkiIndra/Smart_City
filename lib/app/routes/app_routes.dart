@@ -12,5 +12,6 @@ abstract class AppRoutes {
   static const alarm = '/alarm';
   static const splash = '/splash';
   static const setting = '/setting';
+  static const profile = '/profile';
   // ...hapus home kalau tidak dipakai lagi
 }

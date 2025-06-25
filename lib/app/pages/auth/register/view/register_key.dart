@@ -10,7 +10,6 @@ import '../../controllers/auth_controller.dart';
 class RegisterKey extends StatelessWidget {
   RegisterKey({super.key});
   final AuthController authC = Get.find<AuthController>();
-  final RegisterController controller = Get.find();
   final storage = GetStorage(); // ✅ Tambahan
 
   @override
@@ -25,7 +24,7 @@ class RegisterKey extends StatelessWidget {
           vertical: screenHeight * 0.05,
         ),
         child: Form(
-          key: controller.formKey,
+          key: authC.formKeyRegisterKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -41,7 +40,7 @@ class RegisterKey extends StatelessWidget {
               Image.asset("assets/img/logo.jpeg", height: 150),
               SizedBox(height: 20),
               TextFormField(
-                controller: controller.emailController,
+                controller: authC.emailController,
                 decoration: InputDecoration(
                   hintText: "E-Mail",
                   border: OutlineInputBorder(
@@ -62,14 +61,14 @@ class RegisterKey extends StatelessWidget {
 
               Obx(
                 () => TextFormField(
-                  controller: controller.passwordController,
-                  obscureText: controller.isTrue.value,
+                  controller: authC.passwordController,
+                  obscureText: authC.isTrue.value,
                   decoration: InputDecoration(
                     hintText: "Kata Sandi",
                     suffixIcon: IconButton(
-                      onPressed: () => controller.isTrue.toggle(),
+                      onPressed: () => authC.isTrue.toggle(),
                       icon:
-                          controller.isTrue.value
+                          authC.isTrue.value
                               ? Icon(CupertinoIcons.eye_slash_fill)
                               : Icon(CupertinoIcons.eye_fill),
                     ),
@@ -90,14 +89,14 @@ class RegisterKey extends StatelessWidget {
 
               Obx(
                 () => TextFormField(
-                  controller: controller.confirmController,
-                  obscureText: controller.isTrue.value,
+                  controller: authC.confirmController,
+                  obscureText: authC.isTrue.value,
                   decoration: InputDecoration(
                     hintText: "Tulis Ulang Kata Sandi",
                     suffixIcon: IconButton(
-                      onPressed: () => controller.isTrue.toggle(),
+                      onPressed: () => authC.isTrue.toggle(),
                       icon:
-                          controller.isTrue.value
+                          authC.isTrue.value
                               ? Icon(CupertinoIcons.eye_slash_fill)
                               : Icon(CupertinoIcons.eye_fill),
                     ),
@@ -109,7 +108,7 @@ class RegisterKey extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Konfirmasi wajib diisi';
                     }
-                    if (value != controller.passwordController.text) {
+                    if (value != authC.passwordController.text) {
                       return 'Kata sandi tidak cocok';
                     }
                     return null;
@@ -125,9 +124,9 @@ class RegisterKey extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  final email = controller.emailController.text.trim();
-                  final password = controller.passwordController.text.trim();
-                  if (controller.isEmailUsed(email)) {
+                  final email = authC.emailController.text.trim();
+                  final password = authC.passwordController.text.trim();
+                  if (authC.checkEmailExist(email)) {
                     Get.snackbar(
                       icon: Icon(CupertinoIcons.info_circle),
                       "Gagal",
@@ -137,10 +136,9 @@ class RegisterKey extends StatelessWidget {
                     return;
                   }
 
-                  if (controller.formKey.currentState!.validate()) {
-                    controller.addUser(email, password);
+                  if (authC.formKeyRegisterKey.currentState!.validate()) {
+                    authC.addUser(email, password);
 
-                    // Snackbar sukses
                     Get.snackbar(
                       "Berhasil",
                       "Registrasi sukses, silakan login",
@@ -148,11 +146,8 @@ class RegisterKey extends StatelessWidget {
                       duration: Duration(seconds: 2),
                     );
 
-                    // Navigasi ke login setelah delay sedikit biar snackbar sempat muncul
                     Future.delayed(Duration(milliseconds: 500), () {
-                      Get.offAllNamed(
-                        AppRoutes.login,
-                      ); // arahkan ke halaman login
+                      Get.offAllNamed(AppRoutes.login);
                     });
                   }
                 },
@@ -160,28 +155,25 @@ class RegisterKey extends StatelessWidget {
                 child: Text("daftar"),
               ),
               SizedBox(height: screenHeight * 0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "sudah punya akun?",
-                      style: TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "sudah punya akun?",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.login);
+                    },
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(fontSize: 16, color: Color(0xFF06D6A0)),
                     ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.login);
-                      },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF06D6A0),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

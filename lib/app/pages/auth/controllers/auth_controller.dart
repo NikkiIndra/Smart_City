@@ -9,11 +9,18 @@ class AuthController extends GetxController {
   final GlobalKey<FormState> formKeyRegisterKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyLogin = GlobalKey<FormState>();
 
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmController = TextEditingController();
+
   var isFormValid = false.obs;
   var isLoggedIn = false.obs; // Status login menggunakan GetStorage
   final box = GetStorage(); // GetStorage untuk menyimpan status
+  final isLoading = false.obs;
+  final isTrue = true.obs;
+
   // Menyimpan status apakah email sudah terdaftar atau belum
-  var isEmailExist = false.obs;
+  // var isEmailExist = false.obs;
 
   // Properti untuk menampung data pengguna
   String namaKtp = '';
@@ -29,99 +36,141 @@ class AuthController extends GetxController {
     isLoggedIn.value = box.read('isloggedin') ?? false;
   }
 
-  void saveUser(String email, String password) {
-    List<Map<String, dynamic>> users = box.read('users') ?? [];
-    users.add({'email': email, 'password': password});
-    box.write('users', users);
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmController.dispose();
+    super.onClose();
+  }
 
-    // Simpan juga daftar email yang sudah terdaftar
-    List<String> emails = box.read('registeredEmails') ?? [];
-    emails.add(email);
-    box.write('registeredEmails', emails);
+  // membuat getter untuk konversi data dan mudah di akses
+  List<Map<String, dynamic>> get allUsers {
+    final raw = box.read('users') ?? [];
+    return List<Map<String, dynamic>>.from(
+      raw.map((e) => Map<String, dynamic>.from(e)),
+    );
+  }
+
+  void addUser(String email, String password) {
+    final rawUsers = box.read('users') ?? [];
+    print("ISI USERS SAAT INI: $rawUsers");
+    // Pastikan list berisi Map
+  final List<Map<String, dynamic>> users =
+    (rawUsers as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+
+
+    final newUser = {
+      'email': email.trim(),
+      'password': password.trim(),
+      'namaKtp': namaKtp,
+      'noTelepon': noTelepon,
+      'rt': rt,
+      'rw': rw,
+      'namaDesa': namaDesa,
+    };
+
+    users.add(newUser);
+    box.write('users', users);
   }
 
   // Fungsi untuk mengecek email dari GetStorage
+  // bool checkEmailExist(String email) {
+  //   final box = GetStorage();
+  //   final rawEmails = box.read('registeredEmails') ?? [];
+  //   final List<String> emails = List<String>.from(
+  //     rawEmails.whereType<String>(),
+  //   );
+  //   return emails.contains(email.trim());
+  // }
+
+  // bool checkEmailExist(String email) {
+  //   final users = box.read('users') ?? [];
+  //   return users.any((user) => user['email'] == email.trim());
+  // }
   bool checkEmailExist(String email) {
-    final box = GetStorage();
-    final rawEmails = box.read('registeredEmails') ?? [];
-    final List<String> emails = List<String>.from(
-      rawEmails.whereType<String>(),
-    );
-    return emails.contains(email.trim());
+    return allUsers.any((user) => user['email'] == email.trim());
   }
 
-  bool isPasswordComplex(String password) {
-    final regex = RegExp(
-      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-    );
-    return regex.hasMatch(password);
+  Map<String, dynamic>? getUserByEmail(String email) {
+    return allUsers.firstWhereOrNull((user) => user['email'] == email.trim());
   }
 
-  bool isEmailRegistered(String email) {
-    final rawEmails = box.read('registeredEmails') ?? [];
-    // Memastikan data yang dibaca adalah List<String>
-    List<String> emails = List<String>.from(rawEmails.whereType<String>());
-    return emails.contains(email);
-  }
+  // Map<String, dynamic>? getUserByEmail(String email) {
+  //   final users = box.read('users') ?? [];
+  //   return users.firstWhereOrNull((user) => user['email'] == email);
+  // }
+  // bool isPasswordComplex(String password) {
+  //   final regex = RegExp(
+  //     r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+  //   );
+  //   return regex.hasMatch(password);
+  // }
+
+  // bool isUserValid(String email, String password) {
+  //   List<Map<String, dynamic>> users =
+  //       box.read('users') ??
+  //       [];
+
+  //   for (var user in users) {
+  //     if (user['email'] == email && user['password'] == password) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   bool isUserValid(String email, String password) {
-    List<Map<String, dynamic>> users =
-        box.read('users') ??
-        []; // Tidak perlu cast langsung ke Map<String, String>
-
-    for (var user in users) {
-      if (user['email'] == email && user['password'] == password) {
-        return true;
-      }
-    }
-    return false;
+    final users = box.read('users') ?? [];
+    return users.any(
+      (user) => user['email'] == email && user['password'] == password,
+    );
   }
 
   void login(String emailInput, String passwordInput) {
     if (isUserValid(emailInput, passwordInput)) {
-      Get.snackbar(
-        "Login Berhasil",
-        "Selamat datang!",
-        colorText: Colors.white,
-      );
+      final user = getUserByEmail(emailInput);
+      if (user != null) {
+        box.write('isloggedin', true);
+        box.write('currentUser', user);
+        isLoggedIn.value = true;
 
-      box.write('isloggedin', true);
-      isLoggedIn.value = true;
-
-      Get.offAllNamed(AppRoutes.navbar);
-    } else {
-      Get.snackbar(
-        "Login Gagal",
-        "Email atau password salah",
-        colorText: Colors.red,
-      );
+        Get.snackbar('Login Berhasil', 'Selamat datang ${user['namaKtp']}!');
+        Get.offAllNamed(AppRoutes.navbar);
+      } else {
+        Get.snackbar(
+          'Login Gagal',
+          'Email atau password salah',
+          colorText: Colors.red,
+        );
+      }
     }
   }
 
   void validateForm() {
-    final isValid1 = formKeyRegisterKey.currentState?.validate() ?? false;
-    final isValid2 = formKeyRegisterPage.currentState?.validate() ?? false;
-    final isValid3 = formKeyLogin.currentState?.validate() ?? false;
-    isFormValid.value = isValid1 || isValid2 || isValid3;
+    final isValiEmail = formKeyRegisterKey.currentState?.validate() ?? false;
+    final isvalidRegister =
+        formKeyRegisterPage.currentState?.validate() ?? false;
+    final isValidLogin = formKeyLogin.currentState?.validate() ?? false;
+    isFormValid.value = isValiEmail || isvalidRegister || isValidLogin;
   }
 
   void submitForm(BuildContext context, String route) {
-    final key1State = formKeyRegisterKey.currentState;
-    final key2State = formKeyRegisterPage.currentState;
-    final key3State = formKeyLogin.currentState;
+    final isValiEmail = formKeyRegisterKey.currentState?.validate() ?? false;
+    final isvalidRegister =
+        formKeyRegisterPage.currentState?.validate() ?? false;
+    final isValidLogin = formKeyLogin.currentState?.validate() ?? false;
 
-    final isValid1 = key1State?.validate() ?? false;
-    final isValid2 = key2State?.validate() ?? false;
-    final isValid3 = key3State?.validate() ?? false;
-
-    if (isValid1 || isValid2 || isValid3) {
+    if (isValiEmail || isvalidRegister || isValidLogin) {
       // Simulasi proses pendaftaran
       LoadingWidget.showLoading(
         context,
         message:
-            isValid3
+            isValidLogin
                 ? "Memproses login..."
-                : isValid2
+                : isvalidRegister
                 ? "Memproses verifikasi..."
                 : "Memproses pendaftaran...",
       );
@@ -130,7 +179,7 @@ class AuthController extends GetxController {
         LoadingWidget.hideLoading(context);
 
         // Simulasi login/daftar dan update status di GetStorage
-        if (isValid3) {
+        if (isValidLogin) {
           box.write('isloggedin', true);
           isLoggedIn.value = true;
         } else {
@@ -146,9 +195,12 @@ class AuthController extends GetxController {
   }
 
   void logout() {
-    // Logout dengan menghapus status login dari GetStorage
     box.remove('isloggedin');
+    box.remove('currentUser');
     isLoggedIn.value = false;
-    Get.offAllNamed('/welcome'); // Kembali ke halaman welcome setelah logout
+    Get.offAllNamed('/welcome');
   }
+
+  // ✅ Akses user yang sedang login
+  Map<String, dynamic>? get currentUser => box.read('currentUser');
 }

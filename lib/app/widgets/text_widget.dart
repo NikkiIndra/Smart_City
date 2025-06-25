@@ -34,6 +34,7 @@ class TemplateText extends StatelessWidget {
       textAlign: TextAlign.center,
       style: textStyle,
       softWrap: true,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

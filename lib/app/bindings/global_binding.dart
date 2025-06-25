@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:iofes_android_apps_smart_city/app/features/alarm/controllers/alarm_controller.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/dashboard/controllers/dashboard_controller.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/profile/controllers/profile_controller.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/settings/controllers/settings_controller.dart';
 
 // Import semua controller yang dibutuhkan
@@ -15,6 +16,7 @@ class GlobalBindings extends Bindings {
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<SettingsController>(() => SettingsController());
     Get.lazyPut<AlarmController>(() => AlarmController());
+    Get.lazyPut<ProfileController>(() => ProfileController());
     
     // Tambahkan semua controller lainnya di sini
   }

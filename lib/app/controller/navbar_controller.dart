@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/dashboard/view/dashboard_page.dart';
-import 'package:iofes_android_apps_smart_city/app/pages/profile/widgets/profile_page.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/profile/view/profile_page.dart';
 import 'package:iofes_android_apps_smart_city/app/pages/settings/widgets/setting_page.dart';
 
 class NavBarController extends GetxController {
@@ -12,7 +12,7 @@ class NavBarController extends GetxController {
   List<Widget> get pages => [
         SettingsPage(),
         DashboardPage(),
-        const ProfilePage(),
+        ProfilePage(),
       ];
 
   List<String> get titles => [

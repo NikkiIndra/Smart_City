@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iofes_android_apps_smart_city/app/pages/profile/controllers/profile_controller.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../widgets/loading_widget.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+
+  final auth = Get.find<AuthController>();
+  ProfileController controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
+
+  final user = auth.currentUser;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profil Saya"),
@@ -29,12 +38,12 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             // Nama dan Email
-            const Text(
-              "Darwis Setiawan",
+            Text(
+              user?['namaKtp'] ?? '',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const Text(
-              "darwis@email.com",
+            Text(
+              user?['email'] ?? '',
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 20),

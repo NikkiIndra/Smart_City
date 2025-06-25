@@ -79,11 +79,11 @@ class RegisterPage extends StatelessWidget {
                     onPressed: () {
                       if (controller.formKeyRegisterPage.currentState!
                           .validate()) {
-                        storage.write('namaKtp', controller.namaKtp);
-                        storage.write('noTelepon', controller.noTelepon);
-                        storage.write('rt', controller.rt);
-                        storage.write('rw', controller.rw);
-                        storage.write('namaDesa', controller.namaDesa);
+                        // storage.write('namaKtp', controller.namaKtp);
+                        // storage.write('noTelepon', controller.noTelepon);
+                        // storage.write('rt', controller.rt);
+                        // storage.write('rw', controller.rw);
+                        // storage.write('namaDesa', controller.namaDesa);
                         controller.submitForm(context, AppRoutes.register_key);
                       }
                     },

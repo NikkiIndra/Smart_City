@@ -67,11 +67,12 @@ class DashboardPage extends StatelessWidget {
                   const SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       TemplateText(
-                        label: "Hello, David",
+                        label: "Hello, ${controller.name.value}",
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
+                        
                       ),
                       SizedBox(height: 5),
                       TemplateText(
